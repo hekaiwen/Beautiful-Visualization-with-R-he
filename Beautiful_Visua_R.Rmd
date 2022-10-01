@@ -1,0 +1,4422 @@
+---
+title: "Beautiful_Visual_R"
+author: "何开文"
+date: "`r Sys.Date()`"
+output: 
+  dudaozhidaodoc::mp_dudaozhidao_html:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 第1章 R语言编程与绘图基础
+
+## 图1-5-1 数据可视化基础
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+df<-read.csv("./第1章 R语言编程与绘图基础/Facet_Data.csv", header = TRUE)
+
+#-------------------------base----------------------------
+
+plot(df$SOD, df$tau)#,pch=21,lty=0.25,col="grey10") 
+hist(df$SOD,breaks =30,ylim=c(0,40),main  = "")
+boxplot(SOD~Class,data=df,xlab="Class",ylab="SOD")
+
+
+#----------------------------lattice---------------------------
+library(lattice)
+p1<-xyplot(SOD~tau,df,col="black")
+
+p2<-histogram(~SOD,df,type="count",nint=30,col="white")
+
+
+p3<-bwplot(SOD~Class,df,xlab="Class", 
+           par.settings = canonical.theme(color = FALSE))
+
+library(gridExtra) 
+grid.arrange(p1,p2,p3, ncol = 3, nrow = 1)
+
+
+#-------------------------ggplot2----------------------------
+library(ggplot2)
+
+p1<-ggplot(df, aes(x=SOD,y=tau)) + 
+  geom_point() #shape=21,color="black",fill="red",size=3,stroke=0.1
+
+p2<-ggplot(df, aes(SOD)) + 
+  geom_histogram(bins=30,colour="black",fill="white")
+
+p3<-ggplot(df, aes(x=Class,y=SOD)) + 
+  geom_boxplot() 
+
+library(gridExtra) 
+grid.arrange(p1,p2,p3, ncol = 3, nrow = 1)
+
+```
+
+## 图1-6-11 不同视觉暗示的组合结果
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+#library(RColorBrewer)
+#library(reshape2)
+df<-read.csv("./第1章 R语言编程与绘图基础/MappingAnalysis_Data.csv", header = TRUE)
+
+#--------------------------------------Size---------------------------
+ggplot(data=df, aes(x=Time,y=value,group=variable)) + 
+  geom_line()+
+  geom_point(shape=21,size=4,colour="black",fill="white") +
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+
+#--------------------------------------color---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable)) + 
+  geom_line()+
+  geom_point(shape=21,size=4,colour="black") +
+  scale_fill_manual(values=c("grey60","grey30","black","white"))+
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+#--------------------------------------shape---------------------------
+ggplot(data=df, aes(x=Time,y=value,shape=variable)) + 
+  geom_line()+
+  geom_point(size=4,colour="black",fill="grey60") +
+  scale_shape_manual(values=c(21,22,23,24))+
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+
+#--------------------------------------color---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable)) + 
+  geom_line()+
+  geom_point(shape=21,size=4,colour="black") +
+  scale_fill_manual(values=c("#FF9641","#FF5B4E","#B887C3","#38C25D"))+
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+#--------------------------------------color+shape---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable,shape=variable)) + 
+  geom_line()+
+  geom_point(size=4,colour="black") +
+  scale_fill_manual(values=c("grey60","grey30","black","white"))+
+  scale_shape_manual(values=c(21,22,23,24))+
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+
+#--------------------------------------color+shape---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable,shape=variable)) + 
+  geom_line()+
+  geom_point(size=4,colour="black") +
+  scale_fill_manual(values=c("#FF9641","#FF5B4E","#B887C3","#38C25D"))+
+  scale_shape_manual(values=c(21,22,23,24))+
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+
+```
+## 图1-6-14 两种不同形式的投影方法
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(plot3D)
+
+# Reference:https://github.com/coconn/cso002code_BrazilTradeOffsR
+
+par(mfrow = c(1, 1))
+panelfirst <- function(pmat) {
+  zmin <- min(-quakes$depth)
+  XY <- trans3D(quakes$long, quakes$lat,
+                z = rep(zmin, nrow(quakes)), pmat = pmat)
+  scatter2D(XY$x, XY$y, col = "black", pch = ".",
+            cex = 2, add = TRUE, colkey = FALSE)
+  xmin <- min(quakes$long)
+  XY <- trans3D(x = rep(xmin, nrow(quakes)), y = quakes$lat,
+                z = -quakes$depth, pmat = pmat)
+  scatter2D(XY$x, XY$y, col = "black", pch = ".",
+            cex = 2, add = TRUE, colkey = FALSE)
+}
+
+
+library(scales)
+library(RColorBrewer)
+library(fields) 
+colormap <- colorRampPalette(rev(brewer.pal(11,'RdYlGn')))(100)#
+
+index <- ceiling(((prc <- 0.7 * quakes$mag/ diff(range(quakes$mag))) - min(prc) + 0.3)*100)
+for (i in seq(1,length(index)) ){
+  prc[i]=colormap[index[i]]
+}
+
+
+pmar <- par(mar = c(5.1, 4.1, 4.1, 6.1))
+with(quakes, scatter3D(x = long, y = lat, z = -depth, #bgvar = mag,
+                       pch = 21, cex = 1.5,col="black",bg=prc,
+                       xlab = "longitude", ylab = "latitude",
+                       zlab = "depth, km", 
+                       ticktype = "detailed",#bty = "f",box = TRUE,
+                       panel.first = panelfirst,
+                       theta = 140, phi = 20, d=1.5,
+                       colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+colkey (col=colormap,clim=range(quakes$mag),clab = "Richter", add=TRUE, length=0.5,side = 4)
+
+
+#--------------------------------------------------------------------
+pmar <- par(mar = c(5.1, 4.1, 4.1, 6.1))
+with(quakes, scatter3D(x = long, y = lat, z = -depth, #bgvar = mag,
+                       pch = 21, cex = 1.5,col="black",bg=prc,
+                       xlab = "longitude", ylab = "latitude",
+                       zlab = "depth, km", 
+                       ticktype = "detailed",bty = "f",box = TRUE,
+                       panel.first = panelfirst,
+                       theta = 140, phi = 20, d=3,
+                       colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+colkey (col=colormap,clim=range(quakes$mag),clab = "Richter", add=TRUE, length=0.5,side = 4)
+
+#--------------------------------------------------------------------
+pmar <- par(mar = c(5.1, 4.1, 4.1, 6.1))
+with(quakes, scatter3D(x = long, y = lat, z = -depth, #bgvar = mag,
+                       pch = 21, cex = 1.5,col="black",bg=prc,
+                       xlab = "longitude", ylab = "latitude",
+                       zlab = "depth, km", 
+                       ticktype = "detailed",#bty = "f",box = TRUE,
+                       panel.first = panelfirst,
+                       theta = 140, phi = 20, d=30,
+                       colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+colkey (col=colormap,clim=range(quakes$mag),clab = "Richter", add=TRUE, length=0.5,side = 4)
+
+```
+
+## 图1-6-16 坐标系的转换:极坐标
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+setwd("./第1章 R语言编程与绘图基础/")
+
+library(ggplot2)
+
+df<-read.csv("PolarBar_Data.csv", header = TRUE)
+
+ggplot(df,aes(Date,Value))+
+  geom_bar(stat = "identity", width = 10,colour="black",size=0.25,fill="#3BC8EB")+
+  scale_x_continuous(name="Time(day)",breaks=seq(0,360,30))+
+  scale_y_continuous(breaks=seq(0,160,20),limits=c(0,160),expand = expand_scale(add = 0))+
+  theme_classic()
+
+
+ggplot(df,aes(Date,Value))+
+  geom_bar(stat = "identity", width = 10,colour="black",size=0.25,fill="#3BC8EB")+
+  scale_x_continuous(breaks=seq(0,360,30))+
+  scale_y_continuous(breaks=seq(0,115,30),limits=c(-30,115))+
+  coord_polar(theta = "x",start=0) +
+  theme_light()+
+  theme( panel.background = element_blank(),
+         panel.grid.major = element_line(colour = "grey80",size=.25),
+         axis.text.y = element_text(size = 11,colour="black"),
+         axis.line.y = element_line(size=0.25),
+         axis.text.x=element_text(size = 11,colour="black"))
+
+#------------------------------------------------------------
+df<-read.csv("PolarArea_Data.csv", header = TRUE)
+
+ggplot(df,aes(Date,Value))+
+  geom_area(colour="black",size=0.25,fill="#FFA1B9")+
+  scale_x_continuous(name="Time(day)",breaks=seq(0,360,60),expand = expand_scale(add = 0))+
+  scale_y_continuous(breaks=seq(0,3500,500),limits=c(0,3500),expand = expand_scale(add = 0))+
+  theme_classic()
+
+
+ggplot(df,aes(Date,Value))+
+  geom_area(colour=NA,size=0.25,fill="#FFA1B9")+
+  geom_line(colour="black",size=0.25)+
+  scale_x_continuous(name="Time(day)",breaks=seq(0,360,30))+
+  scale_y_continuous(breaks=seq(0,3000,500),limits=c(0,3000))+
+  coord_polar(theta = "x",start=0) +
+  theme_light()+
+  theme( panel.background = element_blank(),
+         panel.grid.major = element_line(colour = "grey80",size=.25),
+         axis.text.y = element_text(size = 10,colour="black"),
+         axis.line.y = element_line(size=0.25),
+         axis.text.x=element_text(size = 11,colour="black"))
+
+```
+
+## 图1-6-18 直角坐标系度量的调整
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+setwd("./第1章 R语言编程与绘图基础/")
+
+library(ggplot2)
+library(RColorBrewer)
+library(reshape2)
+df<-read.csv("MappingAnalysis_Data.csv", header = TRUE)
+
+#--------------------------------------color+shape---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable,shape=variable)) + 
+  geom_line()+
+  geom_point(size=4,colour="black") +
+  scale_fill_manual(values=c("#FF9641","#FF5B4E","#B887C3","#38C25D"))+
+  scale_shape_manual(values=c(21,22,23,24))+
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+
+#--------------------------------------color+shape---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable,shape=variable)) + 
+  geom_line()+
+  geom_point(size=4,colour="black") +
+  scale_fill_manual(values=c("#FF9641","#FF5B4E","#B887C3","#38C25D"))+
+  scale_shape_manual(values=c(21,22,23,24))+
+  
+  scale_x_continuous(name="Time(d)",breaks=seq(0,20,2))+
+  scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90),expand =c(0, 1))+
+  
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+
+```
+
+## 图1-6-23 图例位置的调整
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+library(reshape2)
+setwd("./第1章 R语言编程与绘图基础/")
+df<-read.csv("MappingAnalysis_Data.csv", header = TRUE)
+
+#--------------------------------------color+shape---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable,shape=variable)) + 
+  geom_line()+
+  geom_point(size=4,colour="black") +
+  scale_fill_manual(values=c("#FF9641","#FF5B4E","#B887C3","#38C25D"))+
+  scale_shape_manual(values=c(21,22,23,24))+
+  
+  scale_x_continuous(name="Time(d)",breaks=seq(0,20,2))+
+  scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90),expand =c(0, 1))+
+  
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+    legend.background = element_rect(fill="white"),
+    legend.position="right"
+  )
+
+
+#--------------------------------------color+shape---------------------------
+ggplot(data=df, aes(x=Time,y=value,fill=variable,shape=variable)) + 
+  geom_line()+
+  geom_point(size=4,colour="black") +
+  scale_fill_manual(values=c("#FF9641","#FF5B4E","#B887C3","#38C25D"))+
+  scale_shape_manual(values=c(21,22,23,24))+
+  
+  scale_x_continuous(name="Time(d)",breaks=seq(0,20,2))+
+  scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90),expand =c(0, 1))+
+  
+  theme_classic()+
+  theme(
+    text=element_text(size=14,color="black"),
+   legend.background = element_blank(),
+    legend.position=c(0.2,0.8)
+  )
+
+```
+
+
+## 图1-6-25 不同的图表风格
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+
+library(wesanderson)
+
+ggplot(iris,aes(Sepal.Length, Petal.Length, fill= Species))+
+  geom_point(size=3.5,shape=21,colour="black") +
+  scale_fill_manual(values=wes_palette(n=3, name="Darjeeling1"))+
+  theme_light()
+
+
+#----------------------------Python---------------------------
+ggplot(iris,aes(Sepal.Length, Petal.Length, fill= Species))+
+  geom_point(size=3.5,shape=21,colour="black") +
+  scale_fill_manual(values=wes_palette(n=3, name="Darjeeling1"))+
+  theme_minimal()
+
+```
+
+
+## 图1-6-6 不同的视觉通道映射效果
+
+```{r}
+
+library(ggplot2)
+
+setwd("./第1章 R语言编程与绘图基础/")
+df<-read.csv("Facet_Data.csv", header = TRUE)
+
+p1<-ggplot(df, aes(x=SOD,y=tau,size=age)) + 
+  geom_point(shape=21,color="black",fill="#336A97",stroke=0.25)
+
+p2<-ggplot(df, aes(SOD,tau,fill=age,size=age)) + 
+  geom_point(shape=21,colour="black",stroke=0.25,
+             alpha=0.8) 
+
+p3<-ggplot(df, aes(x=SOD,y=tau,fill=Class)) + 
+  geom_point(shape=21,size=3,colour="black",stroke=0.25)
+
+
+p4<-ggplot(df, aes(SOD,tau,fill=Class,size=age)) + 
+  geom_point(shape=21,colour="black",stroke=0.25,
+             alpha=0.8) 
+
+
+library(gridExtra) 
+grid.arrange(p1,p2,p3,p4, ncol = 2, nrow =2)
+```
+## 图1-6-8 不同的字体和字型组合
+
+```{r}
+library(ggplot2)
+library(Cairo)
+library(showtext)
+
+
+df <- expand.grid(x = seq(0,1,length.out = 4), y= seq(0,1,length.out = 3))
+df$fontface <-rep(c("plain", "bold", "italic", "bold.italic"),3)
+df$family<-rep(c("sans", "times",  "mono"),each=4)
+
+df$label<-paste(df$family,"\n ",df$fontface)
+
+
+#CairoPDF(file="????ͼ.pdf",width=4.67,height=4.36)
+#showtext.begin()
+
+ggplot(df, aes(x, y)) +
+  geom_text(aes(label = label, fontface = fontface,family=family),size = 4) +
+  xlim(-0.2,1.3)+
+  ylim(-0.2,1.2)
+
+#showtext_end()
+#dev.off()
+```
+## 图1-6-9 不同的度量调整效果
+
+```{r}
+
+library(ggplot2)
+library(RColorBrewer)
+
+setwd("./第1章 R语言编程与绘图基础/")
+
+df<-read.csv("Facet_Data.csv", header = TRUE)
+
+p1<-ggplot(df, aes(x=SOD,y=tau,size=age)) + 
+  geom_point(shape=21,color="black",fill="#E53F2F",stroke=0.25,alpha=0.8)+
+  scale_size(range = c(1, 8))
+
+p2<-ggplot(df, aes(SOD,tau,fill=age,size=age)) + 
+  geom_point(shape=21,colour="black",stroke=0.25,
+             alpha=0.8)+
+  scale_size(range = c(1, 8))+
+  scale_fill_distiller(palette="Reds")
+
+p3<-ggplot(df, aes(x=SOD,y=tau,fill=Class,shape=Class)) + 
+  geom_point(size=3,colour="black",stroke=0.25)+
+  scale_fill_manual(values=c("#36BED9","#FF0000","#FBAD01"))+
+  scale_shape_manual(values=c(21,22,23))
+
+
+p4<-ggplot(df, aes(SOD,tau,fill=Class,size=age)) + 
+  geom_point(shape=21,colour="black",stroke=0.25,
+             alpha=0.8) +
+  scale_fill_manual(values=c("#36BED9","#FF0000","#FBAD01"))+
+  scale_size(range = c(1, 8))
+
+
+library(gridExtra) 
+grid.arrange(p1,p2,p3,p4, ncol = 2, nrow =2)
+```
+
+## 表1-6-8 ggplot 与geom 对象之间的关系情况
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+
+N<-20
+df1 <- data.frame(x=sort(rnorm(N)),y=sort(rnorm(N)))
+df2 <- data.frame(x=df1$x+0.1*rnorm(N),y=df1$y+0.1*rnorm(N))
+
+
+# 所有图层共享数据源和美学映射参数
+ggplot(df1,aes(x,y,colour=x+y))+
+  geom_line(size=1)+
+  geom_point(shape=16,size=5)+
+  guides(color=guide_colorbar(title="Point\nLine"))
+
+#所有图层仅共享数据源
+ggplot(df1,aes(x,y))+
+  geom_line(aes(colour=x+y),size=1)+    
+  geom_point(aes(fill=x+y),color="black",shape=21,
+             size=5)+
+  scale_fill_distiller(name="Point",palette="YlOrRd")+
+  scale_color_distiller(name="Line",palette="Blues")
+
+
+#各图层对象均使用独立的数据源与美学映射参数
+ggplot()+
+  geom_line(aes(x,y,colour=x+y),df1,size=1)+    
+  geom_point(aes(x,y,fill=x+y),df2,color="black",
+             shape=21, size=5)+
+  scale_fill_distiller(name="Point",palette="YlOrRd")+
+  scale_color_distiller(name="Line",palette="Blues")
+
+```
+
+## 图1-7-8 不同颜色主题的图表效果
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+
+setwd('./第1章 R语言编程与绘图基础/')
+color_theme<-brewer.pal(7,"Set2")[c(1,2,4,5)]
+
+mydata<-read.csv("Boxplot_Data.csv",stringsAsFactors=FALSE) 
+
+
+ggplot(mydata, aes(Class, Value))+ 
+  geom_boxplot(aes(fill = Class),size=0.25) +
+  geom_jitter(width=0.2,size=1.)+
+  #geom_dotplot(aes(fill = Class),binaxis = "y", stackdir = "center",dotsize = 0.4)+
+  scale_fill_manual(values=c("#4F81BD","#C0504D","#9BBB59","#8064A2"))+
+  theme_bw()+
+  theme(legend.position="none")
+
+
+ggplot(mydata, aes(Class, Value))+ 
+  geom_boxplot(aes(fill = Class),size=0.25) +
+  geom_jitter(width=0.2,size=1.)+
+  #geom_dotplot(aes(fill = Class),binaxis = "y", stackdir = "center",dotsize = 0.4)+
+  scale_fill_manual(values=c("#FF0000","#0000FF","#00FFFF","#FF00FF"))+
+  theme_bw()+
+  theme(legend.position="none")
+
+
+ggplot(mydata, aes(Class, Value))+ 
+  geom_boxplot(aes(fill = Class),size=0.25,outlier.color=NA) +
+  geom_jitter(width=0.2,size=1.)+
+  theme_bw()+
+  theme(legend.position="none")
+
+
+```
+
+
+
+## 图1-7-18 离散型颜色主题方案
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+
+
+setwd("./第1章 R语言编程与绘图基础/")
+df<-read.csv("Facet_Data.csv", header = TRUE)
+
+#------------------------------------------------------ÀëÉ¢ÐÍ------------------------------------------
+library(RColorBrewer)
+
+ggplot(df, aes(x=SOD,y=tau,fill=Class)) + 
+  geom_point(shape=21,size=3,colour="black",stroke=0.25) +
+  scale_fill_brewer(palette='Set1')+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.8,0.15)
+  )
+
+library(viridis)
+ggplot(df, aes(x=SOD,y=tau,fill=Class)) + 
+  geom_point(shape=21,size=3,colour="black",stroke=0.25) +
+  scale_fill_viridis(option = "plasma",discrete =TRUE)+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.8,0.15)
+  )
+
+
+library(wesanderson)
+ggplot(df, aes(x=SOD,y=tau,fill=Class)) + 
+  geom_point(shape=21,size=3,colour="black",stroke=0.25) +
+  scale_fill_manual(values=wes_palette("Darjeeling1")[c(1,3,5)])+
+  theme(
+    text=element_text(size=14,color="black"),
+    plot.title=element_text(size=14,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.8,0.15)
+  )
+
+
+ggplot(df, aes(x=SOD,y=tau,fill=Class)) + 
+  geom_point(shape=21,size=3,colour="black",stroke=0.25) +
+  scale_fill_manual(values=c("#E7298A","#66A61E","#E6AB02"))+
+  theme(
+    legend.background = element_blank(),
+    legend.position=c(0.8,0.15)
+  )
+
+#-------------------------------------------------Á¬ÐøÐÍ------------------------------------------------
+ggplot(df, aes(x = tau, y = SOD, fill=age)) +
+  geom_point(shape=21,size=4,colour="black",alpha=0.95) +
+  scale_fill_distiller(palette="RdYlBu")+
+  theme(
+    text=element_text(size=15,color="black"),
+    plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.85,0.2)
+  )
+
+
+ggplot(df, aes(x = tau, y = SOD, fill=age)) +
+  geom_point(shape=21,size=4,colour="black",alpha=0.95) +
+  scale_fill_viridis(option = "viridis",discrete =FALSE)+
+  theme(
+    text=element_text(size=15,color="black"),
+    plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.85,0.2)
+  )
+
+ggplot(df, aes(x = tau, y = SOD, fill=age)) +
+  geom_point(shape=21,size=4,colour="black",alpha=0.95) +
+  scale_fill_gradient2(low="#00A08A",mid="white",high="#FF0000",midpoint = mean(df$age))+
+  theme(
+    text=element_text(size=15,color="black"),
+    plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.85,0.2)
+  )
+
+ggplot(df, aes(x = tau, y = SOD, fill=age)) +
+  geom_point(shape=21,size=4,colour="black",alpha=0.95) +
+  scale_fill_gradientn(colors= terrain.colors(10))+
+  theme(
+    text=element_text(size=15,color="black"),
+    plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.background = element_blank(),
+    legend.position=c(0.85,0.2)
+  )
+
+```
+## 图1-7-22 相关系数图的双色渐变系颜色方案的应用
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)  
+library(RColorBrewer)  
+library(reshape2) 
+
+mat <- round(cor(mtcars), 1)
+mydata <- melt(mat)  
+colnames(mydata)<-c("Var1","Var2","value")
+
+mydata$AbsValue<-abs(mydata$value)
+
+#--------------------------------(b) 双色渐变系颜色方案---------------------------------------------------------
+ggplot(mydata, aes(x= Var1 , y=Var2)) +
+  geom_point(aes(size=AbsValue,fill = value), shape=21, colour="black") +
+  scale_fill_gradientn(colours=c(brewer.pal(7,"Set1")[2],"white",brewer.pal(7,"Set1")[1]),na.value=NA)+
+  scale_size_area(max_size=12, guide=FALSE) +
+  theme(
+    text=element_text(size=15,face="plain",color="black"),
+    axis.title=element_text(size=13,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.position="right"
+  )
+#--------------------------------(a) R多色系颜色方案---------------------------------------------------------
+mydata$Ceilingcound<-ceiling(mydata$value)
+
+ggplot(mydata, aes(x= Var1 , y=Var2)) +
+  geom_point(aes(size=AbsValue,fill  = factor(Ceilingcound)), shape=21, colour="black") +
+  scale_fill_manual(values =c(brewer.pal(7,"Set1")[2],brewer.pal(7,"Set1")[1]),labels=c('Negative','Positive'),na.value=NA,name="factor")+
+  scale_size_area(max_size=12, guide=FALSE) 
+
+```
+
+## 图1-7-23 时间序列柱形图的双色渐变系颜色方案的应用
+
+```{r}
+
+#EasyCharts团队出品，如有商用必究，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+
+setwd("./第1章 R语言编程与绘图基础/")
+mydata<-read.csv("Column_Data.csv",stringsAsFactors=FALSE)
+mydata$Date<-as.Date(mydata$Date)
+
+ggplot(data = mydata, aes(x = Date, y = temperature,fill = temperature)) +
+  geom_bar(stat = "identity", width = 2)+
+  scale_fill_gradient2("Temperature",low=brewer.pal(7,"Set1")[2],mid="grey90",high=brewer.pal(7,"Set1")[1],midpoint=0)+
+  scale_y_continuous(name="Temperature", limits=c(-10, 30))+
+  theme(
+    panel.background=element_rect(fill="white",colour="black"),
+    panel.grid.major = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+    panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+
+    axis.title=element_text(size=15),
+    axis.text.x = element_text(color="black",size=12),
+    axis.text.y = element_text(color="black",size=12),
+        
+    legend.text=element_text(size=10),
+    legend.title=element_text(color="black",size=12),
+    legend.title.align = 0.5,
+    legend.position=c(0.15,0.75))
+
+
+```
+
+## 图1-7-24 条形图的双色渐变系颜色方案的应用
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+library(Cairo)
+library(showtext)
+setwd('./第1章 R语言编程与绘图基础/')
+
+mydata<- read.csv("Bar_Data.csv",stringsAsFactors=FALSE)
+mydata$Team<-as.character(mydata$Team)
+mydata<-transform(mydata, label1=ifelse(Difference>=0, Team, NA),
+                  label2=ifelse(Difference>0, NA,Team))
+
+#因子排序后，让坐标点有序排列
+#order输出排序后的顺序号
+mydata$Team <- factor(mydata$Team, levels = mydata$Team[order(mydata$Difference)])
+
+#CairoPDF(file="图1-8-15(a)_条形图.pdf",width=5.28,height=5.47) 
+#showtext.begin()
+ggplot(data = mydata, aes(x = Team, y = Difference,fill = Difference)) +
+  geom_bar(stat = "identity", width = 0.8,colour="black",size=0.25)+
+  scale_fill_gradient2(low=brewer.pal(7,"Set1")[2],mid="grey90",high=brewer.pal(7,"Set1")[1],midpoint=0)+
+  geom_text(aes(y = 0,     label=label2),size=3,hjust=-0.1)+ #添加负值部分的数据标签
+  geom_text(aes(y = -0.001,label=label1),size=3,hjust= 1.1)+ #添加正值部分的数据标签
+  coord_flip() +   #坐标轴翻转
+  ylim(-5,5)+
+  theme_minimal() + #图表主题设定
+  theme(
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line(colour = "grey80",size=.25),
+        panel.grid.minor.x = element_line(colour = "grey80",size=.25),
+        plot.title=element_text(size=15,hjust=.5),
+        axis.text.x = element_text(face="plain", color="black",
+                                   size=11, angle=0),
+        axis.text.y = element_blank(),
+        legend.position="right",
+        legend.text=element_text(size=10),
+        legend.title=element_text(size=10))
+#showtext.end()
+#dev.off()
+
+```
+## 图1-7-25 颜色透明度的应用
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2) # load ggplot2
+# setting seed for random numbers
+set.seed(1111)
+
+# random normal variables
+var1<-rnorm(500,-5, 1.5)
+var2<-rnorm(500, 1, 2)
+var3<-rnorm(500, -1, 3)
+
+# data frame with normal variables
+distribs = data.frame(values = c(var1, var2, var3),type = gl(n = 3, k = 500))
+
+# plot
+ggplot(data = distribs, aes(x = values, group = type)) +
+  geom_density(aes(fill = type), color = "black", alpha = 0.8,size=0.5)+
+  theme(legend.position = c(0.9,0.8))
+
+```
+
+# 第2章
+
+# 第3章_类别比较型图表
+
+## 图3-1-1_柱形图系列
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+
+
+
+#-----------------------单数剧系列柱形图--------------------------------------
+
+mydata<-data.frame(Cut=c("Fair","Good","Very Good","Premium","Ideal"),
+                    Price=c(4300,3800,3950,4700,3500))
+
+#mydata$Cut <- factor(mydata$Cut, levels = mydata$Cut[order(mydata$Order)])
+ggplot(data=mydata,aes(x=Cut,y=Price))+
+  geom_bar(stat = "identity", 
+           width = 0.8,colour="black",size=0.25,
+           fill="#FC4E07",alpha=1)+
+  ylim(0, 6000)+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black")
+  )
+
+
+#---------------------------双数剧系列柱形图----------------------------------------------------
+library(reshape2)
+
+setwd('./第3章_类别比较型图表/')
+mydata<-read.csv("MultiColumn_Data.csv",check.names=FALSE,
+                 sep=",",na.strings="NA",
+                 stringsAsFactors=FALSE)
+
+mydata<-melt(mydata,id.vars='Catergory')
+
+ggplot(data=mydata,aes(Catergory,value,fill=variable))+
+  geom_bar(stat="identity",position=position_dodge(),
+           color="black",width=0.7,size=0.25)+
+  scale_fill_manual(values=c("#00AFBB", "#FC4E07"))+
+  ylim(0, 10)+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black"),
+    legend.background  =element_blank(),
+    legend.position = c(0.88,0.88)
+  )
+
+
+#-------------------------------堆积柱形图-------------------------------------------------------
+mydata<-read.csv("StackedColumn_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+
+mydata<-melt(mydata,id.vars='Clarity')
+
+ggplot(data=mydata,aes(variable,value,fill=Clarity))+
+  geom_bar(stat="identity",position="stack", color="black", width=0.7,size=0.25)+
+  scale_fill_manual(values=brewer.pal(9,"YlOrRd")[c(6:2)])+
+  ylim(0, 15000)+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black"),
+    legend.background  =element_blank(),
+    legend.position = c(0.85,0.82)
+  )
+
+#------------------------------百分比堆积柱形图-------------------------------------------------------
+
+mydata<-read.csv("StackedColumn_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+mydata<-melt(mydata,id.vars='Clarity')
+
+ggplot(data=mydata,aes(variable,value,fill=Clarity))+
+  geom_bar(stat="identity", position="fill",color="black", width=0.8,size=0.25)+
+  scale_fill_manual(values=brewer.pal(9,"GnBu")[c(7:2)])+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black"),
+    legend.position = "right"
+  )
+
+```
+
+
+## 图3-1-2_柱形图系列:坐标轴排序
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2) 
+
+#---------------------------单数剧系列柱形图----------------------------------------------------
+
+mydata<-data.frame(Cut=c("Fair","Good","Very Good","Premium","Ideal"), 
+                   Price=c(4300,3800,3950,4700,3500)) 
+
+#排序方法1：基于数据框data.frame
+library(dplyr)
+mydata2<-arrange(mydata,desc(Price))
+mydata$Cut <- factor(mydata$Cut, levels = mydata2$Cut)
+ggplot(data=mydata,aes(Cut,Price))+ 
+  geom_bar(stat = "identity", width = 0.8,
+           colour="black",size=0.25,fill="#FC4E07",alpha=1)
+
+#排序方法2：基于向量vector
+order<-sort(mydata$Price,index.return=TRUE,decreasing = TRUE) 
+mydata$Cut <- factor(mydata$Cut, levels = mydata$Cut[order$ix]) 
+ggplot(data=mydata,aes(Cut,Price))+ 
+  geom_bar(stat = "identity", width = 0.8,
+           colour="black",size=0.25,fill="#FC4E07",alpha=1)
+
+#---------------------------双数剧系列柱形图----------------------------------------------------
+library(reshape2)
+setwd('./第3章_类别比较型图表/')
+mydata<-read.csv("MultiColumn_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+mydata$Catergory<- factor(mydata$Catergory, levels = mydata$Catergory[order(mydata$X1996,decreasing = TRUE)])
+
+mydata<-melt(mydata,id.vars='Catergory')
+
+ggplot(data=mydata,aes(Catergory,value,fill=variable))+
+  geom_bar(stat="identity", color="black", position=position_dodge(),width=0.7,size=0.25)+
+  scale_fill_manual(values=c("#00AFBB", "#FC4E07", "#E7B800"))+
+  ylim(0, 10)+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black"),
+    legend.background  =element_blank(),
+    legend.position = c(0.88,0.88)
+  )
+
+#-------------------------------堆积柱形图-------------------------------------------------------
+mydata<-read.csv("StackedColumn_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+sum<-sort(rowSums(mydata[,2:ncol(mydata)]),index.return=TRUE)
+colsum<-sort(colSums(mydata[,2:ncol(mydata)]),index.return=TRUE,decreasing = TRUE)
+mydata<-mydata[,c(1,colsum$ix+1)]
+
+mydata$Clarity <- factor(mydata$Clarity, levels = mydata$Clarity[order(sum$ix)])
+
+mydata<-melt(mydata,id.vars='Clarity')
+
+ggplot(data=mydata,aes(variable,value,fill=Clarity))+
+  geom_bar(stat="identity",position="stack", color="black", width=0.7,size=0.25)+
+  scale_fill_manual(values=brewer.pal(9,"YlOrRd")[c(6:2)])+
+  ylim(0, 15000)+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black"),
+    legend.background  =element_blank(),
+    legend.position = c(0.85,0.82)
+  )
+
+#------------------------------百分比堆积柱形图-------------------------------------------------------
+
+mydata<-read.csv("StackedColumn_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+Per<-(as.matrix(mydata[5,2:ncol(mydata)])) / t(as.matrix(colSums(mydata[,2:ncol(mydata)]))) 
+
+Ideal<-sort(as.numeric(Per),index.return=TRUE,decreasing = TRUE) 
+mydata<-mydata[,c(1,Ideal$ix+1)] 
+mydata$Clarity <- factor(mydata$Clarity, levels = mydata$Clarity[c(1:5)]) 
+mydata<-melt(mydata,id.vars='Clarity') 
+
+ggplot(data=mydata,aes(variable,value,fill=Clarity))+ 
+  geom_bar(stat="identity", position="fill",color="black", width=0.8,size=0.25)+
+  scale_fill_manual(values=brewer.pal(9,"GnBu")[c(7:2)])+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black"),
+    legend.position = "right"
+  )
+
+```
+## 图3-2-1_条形图系列
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)       
+library(RColorBrewer)
+
+#---------------------------单数剧系列条形图----------------------------------------------------
+
+setwd('./第3章_类别比较型图表/')
+mydata<-read.csv("Stackedbar_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+mydata$Country <- factor(mydata$Country, levels = mydata$Country[order(mydata$Pensions)])
+
+
+ggplot(data=mydata,aes(Country,Pensions))+
+  geom_bar(stat="identity", color="black", width=0.6,fill="#FC4E07",size=0.25) +#"#00AFBB"
+  scale_fill_manual(values=brewer.pal(9,"YlOrRd")[c(6:2)])+
+  coord_flip()+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=13,face="plain",color="black"),
+    legend.position = "right"# c(0.83,0.15)
+  )
+
+#---------------------------双数剧系列条形图----------------------------------------------------
+library(reshape)
+mydata<-read.csv("Stackedbar_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+mydata<-mydata[,c(1,3,2)]
+mydata$Country <- factor(mydata$Country, levels = mydata$Country[order(mydata$Pensions)])
+
+mydata<-melt(mydata,id.vars='Country')
+
+ggplot(data=mydata,aes(Country,value,fill=variable))+
+  geom_bar(stat="identity", color="black", position=position_dodge(),width=0.7,size=0.25)+
+  scale_fill_manual(values=c("#00AFBB", "#FC4E07", "#E7B800"))+
+  coord_flip()+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black"),
+    legend.background  =element_blank(),
+    legend.position = c(0.83,0.12)
+  )
+
+
+#-------------------------------堆积条形图-------------------------------------------------------
+mydata<-read.csv("Stackedbar_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+
+rowsum<-sort(rowSums(mydata[,2:ncol(mydata)]),index.return=TRUE)
+
+mydata$Country <- factor(mydata$Country, levels = mydata$Country[order(rowsum$ix)])
+mydata<-melt(mydata,id.vars='Country')
+
+ggplot(data=mydata,aes(Country,value,fill=variable))+
+  geom_bar(stat="identity",position="stack", color="black", width=0.65,size=0.25)+
+  scale_fill_manual(values=brewer.pal(9,"YlOrRd")[c(6:2)])+
+  ylim(0, 35)+
+  coord_flip()+
+  theme(
+    #text=element_text(size=15,face="plain",color="black"),
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=13,face="plain",color="black"),
+    legend.position = "right"# c(0.83,0.15)
+  )
+
+#------------------------------百分比堆积柱形图-------------------------------------------------------
+mydata<-read.csv("Stackedbar_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+
+sum<-sort(rowSums(mydata[,2:ncol(mydata)]),index.return=TRUE)
+
+mydata$Country <- factor(mydata$Country, levels = mydata$Country[order(sum$ix)])
+mydata<-melt(mydata,id.vars='Country')
+
+library(RColorBrewer)
+ggplot(data=mydata,aes(Country,value,fill=variable))+
+  geom_bar(stat="identity",position="fill", color="black", width=0.65,size=0.25)+
+  scale_fill_manual(values=brewer.pal(9,"GnBu")[c(7:2)])+
+  coord_flip()+
+  theme(
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=12,face="plain",color="black"),
+    legend.title=element_text(size=13,face="plain",color="black"),
+    legend.position = "right"
+  )
+
+
+
+```
+## 图3-3-1 不等宽柱形图
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(Cairo)
+library(showtext)
+
+mydata<-data.frame(Name=paste0("Project",1:5),Scale=c(35,30,20,10,5),ARPU=c(56,37,63,57,59))
+mydata$xmin<-0
+for (i in 2:5){
+  mydata$xmin[i]<-sum(mydata$Scale[1:i-1])
+}
+#构造矩形X轴的终点（最大点）
+for (i in 1:5){
+  mydata$xmax[i]<-sum(mydata$Scale[1:i])
+}
+#构造数据标签的横坐标：
+for (i in 1:5){
+  mydata$label[i]<-sum(mydata$Scale[1:i])-mydata$Scale[i]/2
+}
+
+#CairoPDF(file="不等宽柱形图.pdf",width=4.89,height=5.53)
+#showtext.begin()
+#windowsFonts(myFont = windowsFont("微软雅黑"))
+ggplot(mydata)+
+  geom_rect(aes(xmin=xmin,xmax=xmax,ymin=0,ymax=ARPU,fill=Name),colour="black",size=0.25)+
+  geom_text(aes(x=label,y=ARPU+3,label=ARPU),size=4,col="black")+
+  geom_text(aes(x=label,y=-2.5,label=Name),size=4,col="black")+
+  ylab("ARPU")+
+  xlab("scale")+
+  ylim(-5,80)+
+  theme(panel.background=element_rect(fill="white",colour=NA),
+        panel.grid.major = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+        panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+        text=element_text(size=15),
+        plot.title=element_text(size=15,hjust=.5),#family="myfont",
+        legend.position="none"
+  )
+#showtext.end()
+#dev.off()
+
+```
+## 图3-4-1 克利夫兰点图系列
+
+```{r eval=FALSE}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(reshape2)
+
+#-------------------------------- (a)棒棒糖图 ----------------------------------------------
+setwd("./第3章_类别比较型图表/")
+
+mydata<-read.csv("DotPlots_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+mydata$sum<-rowSums(mydata[,2:3])
+
+order<-sort(mydata$sum,index.return=TRUE,decreasing = FALSE)
+mydata$City<- factor(mydata$City, levels = mydata$City[order$ix])
+
+ggplot(mydata, aes(sum, City)) +
+  geom_segment(aes(x=0, 
+                   xend=sum,
+                   y=City, 
+                   yend=City))+
+  geom_point(shape=21,size=3,colour="black",fill="#FC4E07")+
+  theme(
+    axis.title=element_text(size=13,face="plain",color="black"),
+    axis.text = element_text(size=10,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black")
+  )
+
+#-------------------------------- (b) 克利夫兰点图  ----------------------------------------------
+setwd('./第3章_类别比较型图表/')
+mydata<-read.csv("DotPlots_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+mydata$sum<-rowSums(mydata[,2:3])
+
+order<-sort(mydata$sum,index.return=TRUE,decreasing = FALSE)
+mydata$City<- factor(mydata$City, levels = mydata$City[order$ix])
+
+ggplot(mydata, aes(sum, City)) +
+  geom_point(shape=21,size=3,colour="black",fill="#FC4E07")+
+  theme(
+    axis.title=element_text(size=13,face="plain",color="black"),
+    axis.text = element_text(size=10,face="plain",color="black"),
+    legend.title=element_text(size=14,face="plain",color="black")
+  )
+
+#----------------------------------(c) 哑铃图------------------------
+mydata<-read.csv("DotPlots_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+mydata$City <- factor(mydata$City, levels = mydata$City[order(mydata$Female)])
+mydata<-melt(mydata,id.vars='City')
+
+ggplot(mydata, aes(value,City,fill=variable)) +
+  geom_line(aes(group = City)) +
+  geom_point(shape=21,size=3,colour="black")+
+  scale_fill_manual(values=c("#00AFBB", "#FC4E07","#36BED9"))+
+  theme(
+    axis.title=element_text(size=13,face="plain",color="black"),
+    axis.text = element_text(size=10,face="plain",color="black"),
+    legend.title=element_text(size=12,face="plain",color="black"),
+    legend.background = element_blank(),
+    legend.position = c(0.85,0.12)
+  )
+
+
+```
+## 图3-4-1 克利夫兰点图系列
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(scales)
+library(reshape)
+#--------------------------------------(a)两年份对比---------------------------------------------------------------
+
+df <- read.csv("./第3章_类别比较型图表/Slopecharts_Data1.csv")
+colnames(df) <- c("continent", "1952", "1957")
+left_label <- paste(df$continent, round(df$`1952`),sep=", ")
+right_label <- paste(df$continent, round(df$`1957`),sep=", ")
+df$class <- ifelse((df$`1957` - df$`1952`) < 0, "red", "green")
+
+p <- ggplot(df) + 
+  geom_segment(aes(x=1, xend=2, y=`1952`, yend=`1957`, col=class), size=.75, show.legend=F) +  #连接线
+  geom_vline(xintercept=1, linetype="solid", size=.1) + # 1952年的垂直直线
+  geom_vline(xintercept=2, linetype="solid", size=.1) + # 1957年的垂直直线
+  geom_point(aes(x=1, y=`1952`), size=3,shape=21,fill="grey80",color="black") + # 1952年的数据点
+  geom_point(aes(x=2, y=`1957`), size=3,shape=21,fill="grey80",color="black") + # 1957年的数据点
+  scale_color_manual(labels = c("Up", "Down"), values = c("green"="#A6D854","red"="#FC4E07")) +  
+  xlim(.5, 2.5) 
+
+# 添加文本信息
+p <- p + geom_text(label=left_label, y=df$`1952`, x=rep(1, NROW(df)), hjust=1.1, size=3.5)
+p <- p + geom_text(label=right_label, y=df$`1957`, x=rep(2, NROW(df)), hjust=-0.1, size=3.5)
+p <- p + geom_text(label="1952", x=1, y=1.02*(max(df$`1952`, df$`1957`)), hjust=1.2, size=5)   
+p <- p + geom_text(label="1957", x=2, y=1.02*(max(df$`1952`, df$`1957`)), hjust=-0.1, size=5) 
+
+p<-p+theme_void()
+p
+
+#-------------------------------------(b)多年份对比---------------------------------------------------------------------------------
+library(ggalt)
+setwd('./第3章_类别比较型图表/')
+df <- read.csv("Slopecharts_Data2.csv")
+colnames(df) <- c("continent", 2007:2013)
+
+
+df2<-melt(df, id="continent")
+
+df2$value<-as.numeric(df2$value)
+df2$variable<-as.numeric(df2$variable)
+
+left_label<-paste(df2$continent,  round(df2$value),sep=", ")
+right_label<-paste(df2$continent, round(df2$value),sep=", ")
+
+left_point<-df2$value
+right_point<-df2$value
+class<-df2$variable
+  
+for (i in 1:nrow(df2))
+{
+  if (df2$variable[i]!=1)
+  {
+    left_label[i]<-""
+    left_point[i]<-NaN
+  }
+  if (df2$variable[i]!=7)
+  {
+    right_label[i]<-""
+    right_point[i]<-NaN
+  }
+  
+  if (df[df$continent==df2$continent[i],2]>df[df$continent==df2$continent[i],8])
+  {
+    class[i]<-"green"
+  }
+  else
+  {
+    class[i]<-"red"
+  }
+  
+}
+
+p <- ggplot(df2) + 
+  geom_xspline(aes(x=variable, y=value,group=continent, colour=class),size=.75) + 
+  geom_vline(xintercept=1, linetype="solid", size=.1) + 
+  geom_vline(xintercept=7, linetype="solid", size=.1) +
+  geom_point(aes(x=variable, y=left_point), size=3,shape=21,fill="grey80",color="black") + 
+  geom_point(aes(x=variable, y=right_point), size=3,shape=21,fill="grey80",color="black") + 
+  scale_color_manual(labels = c("Up", "Down"), values = c("green"="#FC4E07",  "red"="#A6D854")) +  
+  xlim(-4, 12) 
+
+p <- p + geom_text(label=left_label, y=df2$value, x=rep(1, NROW(df2)), hjust=1.1, size=3.5)
+p <- p + geom_text(label=right_label, y=df2$value, x=rep(7, NROW(df2)), hjust=-0.1, size=3.5)
+p <- p + geom_text(label="2007", x=1, y=1.02*(max(df2$value)), hjust=1.2, size=5)  # title
+p <- p + geom_text(label="2013", x=7, y=1.02*(max(df2$value)), hjust=-0.1, size=5)  # title
+
+p<-p+theme_void()+
+  theme(legend.position = "none")
+p
+
+```
+## 图3-5-1 坡度图
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(scales)
+library(reshape)
+#--------------------------------------(a)两年份对比---------------------------------------------------------------
+
+setwd("./第3章_类别比较型图表/")
+
+df <- read.csv("Slopecharts_Data1.csv")
+colnames(df) <- c("continent", "1952", "1957")
+left_label <- paste(df$continent, round(df$`1952`),sep=", ")
+right_label <- paste(df$continent, round(df$`1957`),sep=", ")
+df$class <- ifelse((df$`1957` - df$`1952`) < 0, "red", "green")
+
+p <- ggplot(df) + 
+  geom_segment(aes(x=1, xend=2, y=`1952`, yend=`1957`, col=class), size=.75, show.legend=F) +  #连接线
+  geom_vline(xintercept=1, linetype="solid", size=.1) + # 1952年的垂直直线
+  geom_vline(xintercept=2, linetype="solid", size=.1) + # 1957年的垂直直线
+  geom_point(aes(x=1, y=`1952`), size=3,shape=21,fill="grey80",color="black") + # 1952年的数据点
+  geom_point(aes(x=2, y=`1957`), size=3,shape=21,fill="grey80",color="black") + # 1957年的数据点
+  scale_color_manual(labels = c("Up", "Down"), values = c("green"="#A6D854","red"="#FC4E07")) +  
+  xlim(.5, 2.5) 
+
+# 添加文本信息
+p <- p + geom_text(label=left_label, y=df$`1952`, x=rep(1, NROW(df)), hjust=1.1, size=3.5)
+p <- p + geom_text(label=right_label, y=df$`1957`, x=rep(2, NROW(df)), hjust=-0.1, size=3.5)
+p <- p + geom_text(label="1952", x=1, y=1.02*(max(df$`1952`, df$`1957`)), hjust=1.2, size=5)   
+p <- p + geom_text(label="1957", x=2, y=1.02*(max(df$`1952`, df$`1957`)), hjust=-0.1, size=5) 
+
+p<-p+theme_void()
+p
+
+#-------------------------------------(b)多年份对比---------------------------------------------------------------------------------
+library(ggalt)
+
+df <- read.csv("Slopecharts_Data2.csv")
+colnames(df) <- c("continent", 2007:2013)
+
+
+df2<-melt(df, id="continent")
+
+df2$value<-as.numeric(df2$value)
+df2$variable<-as.numeric(df2$variable)
+
+left_label<-paste(df2$continent,  round(df2$value),sep=", ")
+right_label<-paste(df2$continent, round(df2$value),sep=", ")
+
+left_point<-df2$value
+right_point<-df2$value
+class<-df2$variable
+  
+for (i in 1:nrow(df2))
+{
+  if (df2$variable[i]!=1)
+  {
+    left_label[i]<-""
+    left_point[i]<-NaN
+  }
+  if (df2$variable[i]!=7)
+  {
+    right_label[i]<-""
+    right_point[i]<-NaN
+  }
+  
+  if (df[df$continent==df2$continent[i],2]>df[df$continent==df2$continent[i],8])
+  {
+    class[i]<-"green"
+  }
+  else
+  {
+    class[i]<-"red"
+  }
+  
+}
+
+p <- ggplot(df2) + 
+  geom_xspline(aes(x=variable, y=value,group=continent, colour=class),size=.75) + 
+  geom_vline(xintercept=1, linetype="solid", size=.1) + 
+  geom_vline(xintercept=7, linetype="solid", size=.1) +
+  geom_point(aes(x=variable, y=left_point), size=3,shape=21,fill="grey80",color="black") + 
+  geom_point(aes(x=variable, y=right_point), size=3,shape=21,fill="grey80",color="black") + 
+  scale_color_manual(labels = c("Up", "Down"), values = c("green"="#FC4E07",  "red"="#A6D854")) +  
+  xlim(-4, 12) 
+
+p <- p + geom_text(label=left_label, y=df2$value, x=rep(1, NROW(df2)), hjust=1.1, size=3.5)
+p <- p + geom_text(label=right_label, y=df2$value, x=rep(7, NROW(df2)), hjust=-0.1, size=3.5)
+p <- p + geom_text(label="2007", x=1, y=1.02*(max(df2$value)), hjust=1.2, size=5)  # title
+p <- p + geom_text(label="2013", x=7, y=1.02*(max(df2$value)), hjust=-0.1, size=5)  # title
+
+p<-p+theme_void()+
+  theme(legend.position = "none")
+p
+
+```
+
+
+
+## 图3-6-2 南丁格尔玫瑰图系列
+
+```{r eval=FALSE}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(tidyverse)
+#----------------------------------单数据系列极坐标柱形图-----------------------------------------
+mydata <- data.frame( a=c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"),
+                      b=c(50, 60, 70, 20,90,110,30))
+myAngle <-seq(-20,-340,length.out =7)
+
+ggplot(mydata) +
+  geom_bar(aes(x=a, y=b),width = 1,stat="identity",
+           colour = "black",fill="#F8766D") +
+  geom_text(aes(x=a,y = b-8,label = b),color="white") +
+  coord_polar(theta = "x",start=0) +
+  ylim(c(0,120))+
+  theme_light()+
+  theme( panel.background = element_blank(),
+         panel.grid.major = element_line(colour = "grey80",size=.25),
+         axis.text.y = element_text(size = 12,colour="black"),
+         axis.line.y = element_line(size=0.25),
+         axis.text.x=element_text(size = 13,colour="black",angle = myAngle))
+
+#--------------------------------多数据系列极坐标柱形图-------------------------------------------
+
+diamonds<-cbind(diamonds,Cou=rep(1,nrow(diamonds)))
+sum_clarity<-aggregate(Cou~clarity,diamonds,sum)
+sort_clarity<-arrange(sum_clarity,desc(Cou))
+diamonds$clarity<- factor(diamonds$clarity, levels = sort_clarity$clarity)
+myAngle <-seq(-20,-340,length.out = 8)
+
+
+ggplot(diamonds,aes(x=clarity,fill=color))+
+  geom_bar(width=1.0,colour="black",size=0.25)+
+  coord_polar(theta = "x",start=0)+
+  scale_fill_brewer(palette="GnBu")+
+  guides(fill=guide_legend(reverse=TRUE,title=NULL))+
+  ylim(c(0,12000))+
+  theme_light()+
+  theme( panel.background = element_blank(),
+         panel.grid.major = element_line(colour = "grey80",size=.25),
+         axis.text.y = element_text(size = 12,colour="black"),
+         axis.line.y = element_line(size=0.25),
+         axis.text.x=element_text(size = 13,colour="black",angle = myAngle))
+
+ 
+ggplot(diamonds,aes(x=clarity,fill=color))+
+  geom_bar(width=1.0,colour="black",size=0.25)+
+  coord_polar(theta = "x",start=0)+
+  scale_fill_brewer(palette="Reds")+
+  guides(fill=guide_legend(reverse=TRUE,title="Color"))+
+  ylim(c(-2000,12000))+
+  theme_light()+
+  theme( panel.background = element_blank(),
+         panel.grid.major = element_line(colour = "grey80",size=.25),
+         axis.text.y = element_text(size = 12,colour="black"),
+         axis.line.y = element_line(size=0.25),
+         axis.text.x=element_text(size = 13,colour="black",angle = myAngle))
+
+
+```
+
+
+## 图3-7-2 径向柱形图
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+df <- data.frame(item=rep(LETTERS[1:10], 5), 
+                 score=rep(letters[1:5], each=10), 
+                 value=rep((1:5), each=10) + rnorm(50, 0, .5))
+
+
+myAng <-seq(-20,-340,length.out =10)
+ggplot(data=df,aes(item,value,fill=score))+
+  geom_bar(stat="identity", color="black", position=position_dodge(),width=0.7,size=0.25)+
+  coord_polar(theta = "x",start=0) +
+  ylim(c(-3,6))+
+  scale_fill_brewer(palette="YlGnBu")+
+  theme_light()+
+  theme( panel.background = element_blank(),
+         panel.grid.major = element_line(colour = "grey80",size=.25),
+         axis.text.y = element_text(size = 12,colour="black"),
+         axis.line.y = element_line(size=0.25),
+         axis.text.x=element_text(size = 13,colour="black",angle = myAng))
+
+```
+
+
+## 图3-7-3 极坐标跨度图
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(viridis)
+
+df<-read.csv("./第3章_类别比较型图表/PloarRange_Data.csv",sep=",",na.strings="NA",stringsAsFactors=FALSE)
+df$date<-as.Date(df$date)
+
+myAngle <-seq(-20,-340,length.out = 12)
+
+ggplot(df, aes(date,
+               ymin = min.temperaturec,
+               ymax = max.temperaturec,
+               color = mean.temperaturec)) + 
+  geom_linerange(size = 1.3, alpha = 0.75) +
+  scale_color_viridis("Temperature", option = "D") +
+  scale_x_date(date_labels = "%m",  date_breaks = "month") + 
+  ylim(-10, 35) + 
+  coord_polar() + 
+  theme_light() +
+  theme( panel.background = element_blank(),
+         panel.grid.major = element_line(colour = "grey80",size=.25),
+         axis.text.y = element_text(size = 12,colour="black"),
+         axis.line.y = element_line(size=0.25),
+         axis.text.x=element_text(size = 13,colour="black",angle = myAngle))
+
+
+```
+
+
+## 图3-8-1 雷达图的绘制演变过程
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+
+#--------------------------------------------雷达图实现原理-------------------------------------------------------
+#Reference:https://github.com/cardiomoon/ggplot2new/blob/4e50b7dcfee3246a169702f88f7dd46cbf933f4b/coord_radar.R
+
+coord_radar <- function (theta = "x", start = 0, direction = 1) 
+{  theta <- match.arg(theta, c("x", "y"))
+r <- if (theta == "x") 
+  "y"
+else "x"
+ggproto("CoordRadar", CoordPolar, theta = theta, r = r, start = start, 
+        direction = sign(direction),
+        is_linear = function(coord) TRUE)}
+
+
+#----------------------------------------单数据系列--------------------------------------------------------------
+label_data<-data.frame(car=c("Math" , "English" , "Biology" , "Music" , "R-Coding" ),
+                    id=c(1:5) ,
+                    value=c(12 , 2 ,14 ,20, 18))
+
+AddRow<-c(NA,nrow(label_data)+1,label_data[1,ncol(label_data)])
+mydata<-rbind(label_data,AddRow)
+
+myAngle<- 360- 360 * (label_data$id-1) /nrow(label_data)  
+
+ggplot() + 
+  geom_polygon(data=mydata,aes(x=id, y=value),color = "black", fill=brewer.pal(7,"Set1")[1],alpha=0.1)+
+  geom_point(data=mydata,aes(x=id, y=value),size=5,shape=21,color = 'black', fill=brewer.pal(7,"Set1")[1])+
+  coord_polar() + #实现为图3-8-1(c) 的圆形雷达图
+  ylim(0,22)+
+  theme_light()+
+  theme(axis.text.x=element_text(size = 11,colour="black"))
+
+ggplot() + 
+  geom_polygon(data=mydata,aes(x=id, y=value),color = "black", fill=brewer.pal(7,"Set1")[1],alpha=0.1)+
+  geom_point(data=mydata,aes(x=id, y=value),size=5,shape=21,color = 'black', fill=brewer.pal(7,"Set1")[1])+
+  coord_polar() + #实现为图3-8-1(c) 的圆形雷达图
+  #coord_radar()+  #
+  scale_x_continuous(breaks =label_data$id,labels=label_data$car)+
+  ylim(0,22)+
+  theme_light()+
+  theme(axis.text.x=element_text(size = 11,colour="black",angle = myAngle))
+
+
+```
+
+
+## 图3-8-2 多数据系列雷达图
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(reshape2)
+
+#--------------------------------------------雷达图实现原理-------------------------------------------------------
+#coord_radar-Reference:
+#https://github.com/cardiomoon/ggplot2new/blob/4e50b7dcfee3246a169702f88f7dd46cbf933f4b/coord_radar.R
+
+coord_radar <- function (theta = "x", start = 0, direction = 1) 
+{  theta <- match.arg(theta, c("x", "y"))
+r <- if (theta == "x") 
+  "y"
+else "x"
+ggproto("CoordRadar", CoordPolar, theta = theta, r = r, start = start, 
+        direction = sign(direction),
+        is_linear = function(coord) TRUE)}
+
+#--------------------------------------------多数据系列-------------------------------------------------------
+label_data<-data.frame(
+  car=c("biology" , "english" ,"math" ,  "music" , "R-coding" ),
+  id=c(1:5) ,
+  v1=sample( 0:20,5, replace=T),
+  v2=sample( 0:20,5, replace=T)
+)
+
+AddRow<-c(NA,nrow(label_data)+1,label_data[1,ncol(label_data)-1],label_data[1,ncol(label_data)])
+mydata<-rbind(label_data,AddRow)
+
+myAngle<- 360- 360 * (label_data$id-1) /nrow(label_data)  
+
+mydata<-melt(mydata,id=c("car", "id"))
+
+ggplot(data=mydata,aes(x=id, y=value,group=variable,fill=variable)) + 
+  geom_polygon(colour="black",alpha=0.1)+
+  geom_point(size=4,shape=21,color = 'black')+
+  coord_radar()+
+  #coord_polar() +
+  scale_x_continuous(breaks =label_data$id,labels=label_data$car)+
+  theme_bw() +
+  ylim(0,22)+
+  theme(axis.text.x=element_text(size = 11,colour="black",angle = myAngle),
+        axis.title=element_text(size=15,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        panel.grid.major = element_line(color="grey80"),
+        axis.line = element_line(color="black"),
+        axis.ticks =  element_line(color="black"))
+
+
+
+```
+## 图3-9-3 单篇文章的词云图
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+
+#--------------------------------------------雷达图实现原理-------------------------------------------------------
+#coord_radar-Reference:
+#https://github.com/cardiomoon/ggplot2new/blob/4e50b7dcfee3246a169702f88f7dd46cbf933f4b/coord_radar.R
+
+coord_radar <- function (theta = "x", start = 0, direction = 1) 
+{  theta <- match.arg(theta, c("x", "y"))
+r <- if (theta == "x") 
+  "y"
+else "x"
+ggproto("CoordRadar", CoordPolar, theta = theta, r = r, start = start, 
+        direction = sign(direction),
+        is_linear = function(coord) TRUE)}
+
+#--------------------------------------------多数据系列-------------------------------------------------------
+label_data<-data.frame(
+  car=c("biology" , "english" ,"math" ,  "music" , "R-coding" ),
+  id=c(1:5) ,
+  v1=sample( 0:20,5, replace=T),
+  v2=sample( 0:20,5, replace=T)
+)
+
+AddRow<-c(NA,nrow(label_data)+1,label_data[1,ncol(label_data)-1],label_data[1,ncol(label_data)])
+mydata<-rbind(label_data,AddRow)
+
+myAngle<- 360- 360 * (label_data$id-1) /nrow(label_data)  
+
+mydata<-melt(mydata,id=c("car", "id"))
+
+ggplot(data=mydata,aes(x=id, y=value,group=variable,fill=variable)) + 
+  geom_polygon(colour="black",alpha=0.1)+
+  geom_point(size=4,shape=21,color = 'black')+
+  coord_radar()+
+  #coord_polar() +
+  scale_x_continuous(breaks =label_data$id,labels=label_data$car)+
+  theme_bw() +
+  ylim(0,22)+
+  theme(axis.text.x=element_text(size = 11,colour="black",angle = myAngle),
+        axis.title=element_text(size=15,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        panel.grid.major = element_line(color="grey80"),
+        axis.line = element_line(color="black"),
+        axis.ticks =  element_line(color="black"))
+
+
+
+```
+
+# 第4章 数据关系型图表
+
+## 图4-1-10 气泡图系列
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+library(ggrepel)
+attach(mtcars)
+
+ #-------------------------------(c) 带数据标签的气泡图-------------------------------------------------------------
+
+ ggplot(data=mtcars, aes(x=wt,y=mpg))+
+   geom_point(aes(size=disp,fill=disp),shape=21,colour="black",alpha=0.8)+
+   scale_fill_gradient2(low="#377EB8",high="#E41A1C",midpoint = mean(mtcars$disp))+
+   geom_text_repel(label = disp )+
+   scale_size_area(max_size=12)+
+   guides(size = guide_legend((title="Value")),
+          fill = guide_legend((title="Value")))+
+   theme(
+     legend.text=element_text(size=10,face="plain",color="black"),
+     axis.title=element_text(size=10,face="plain",color="black"),
+     axis.text = element_text(size=10,face="plain",color="black"),
+     legend.position = "right"
+   )
+
+
+#--------------------------(d) 方块状的气泡图--------------------------------------------------
+ggplot(mtcars, aes(wt,mpg))+
+  geom_point(aes(size=disp,fill=disp),shape=22,colour="black",alpha=0.8)+
+  scale_fill_gradient2(low=brewer.pal(7,"Set1")[2],high=brewer.pal(7,"Set1")[1],
+                       midpoint = mean(mtcars$disp))+
+  scale_size_area(max_size=12)+
+  guides(fill = guide_legend((title="Value")),
+         size =  guide_legend((title="Value")))+
+  theme(
+    text=element_text(size=15,color="black"),
+    plot.title=element_text(size=15,family="myfont",face="bold.italic",color="black")#,
+    #legend.position=c(0.9,0.05)
+  )
+
+```
+
+
+## 图4-1-11 三维散点图2
+
+```{r}
+
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(plot3D)
+library(scales)
+library(RColorBrewer)
+library(fields) 
+
+#---------------------------------------------------------------------------------------------
+
+
+
+df<-read.csv("./第4章 数据关系型图表/ThreeD_Scatter_Data.csv",header=T)
+
+pmar <- par(mar = c(5.1, 4.1, 4.1, 6.1))
+with(df, scatter3D(x = mph, y = Gas_Mileage, z = Power, #bgvar = mag,
+                   pch = 21, cex = 1.5,col="black",bg="#F57446",
+                   xlab = "0-60 mph (sec)",
+                   ylab = "Gas Mileage (mpg)",
+                   zlab = "Power (kW)", 
+                   zlim=c(40,180),
+                   ticktype = "detailed",bty = "f",box = TRUE,
+                   #panel.first = panelfirst,
+                   theta = 60, phi = 20, d=3,
+                   colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+
+#---------------------------------------------------------------------------------------
+colormap <- colorRampPalette(rev(brewer.pal(11,'RdYlGn')))(100)#
+
+index <- ceiling(((prc <- 0.7 * df$Power/ diff(range(df$Power))) - min(prc) + 0.3)*100)
+for (i in seq(1,length(index)) ){
+  prc[i]=colormap[index[i]]
+}
+pmar <- par(mar = c(5.1, 4.1, 4.1, 6.1))
+with(df, scatter3D(x = mph, y = Gas_Mileage, z = Power, #bgvar = mag,
+                       pch = 21, cex = 1.5,col="black",bg=prc,
+                   xlab = "0-60 mph (sec)",
+                   ylab = "Gas Mileage (mpg)",
+                   zlab = "Power (kW)", 
+                   zlim=c(40,180),
+                       ticktype = "detailed",bty = "f",box = TRUE,
+                       #panel.first = panelfirst,
+                       theta = 60, phi = 20, d=3,
+                       colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+colkey (col=colormap,clim=range(df$Power),clab = "Power", add=TRUE, length=0.5,side = 4)
+
+#----------------------------------------------------------------------------------------
+index <- ceiling(((prc <- 0.7 * df$Weight/ diff(range(df$Weight))) - min(prc) + 0.3)*100)
+for (i in seq(1,length(index)) ){
+  prc[i]=colormap[index[i]]
+}
+pmar <- par(mar = c(5.1, 4.1, 4.1, 6.1))
+with(df, scatter3D(x = mph, y = Gas_Mileage, z = Power, #bgvar = mag,
+                   pch = 21, cex = 1.5,col="black",bg=prc,
+                   xlab = "0-60 mph (sec)",
+                   ylab = "Gas Mileage (mpg)",
+                   zlab = "Power (kW)", 
+                   zlim=c(40,180),
+                   ticktype = "detailed",bty = "f",box = TRUE,
+                   #panel.first = panelfirst,
+                   theta = 60, phi = 20, d=3,
+                   colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+colkey (col=colormap,clim=range(df$Weight),clab = "Weight", add=TRUE, length=0.5,side = 4)
+
+#-----------------------------------------------------------------------------------------
+with(df, scatter3D(x = mph, y = Gas_Mileage, z = Power, #bgvar = mag,
+                   pch = 21, cex = rescale(df$Weight, c(.5, 5)),col="black",bg="#ED5E3C",
+                   xlab = "0-60 mph (sec)",
+                   ylab = "Gas Mileage (mpg)",
+                   zlab = "Power (kW)", 
+                   zlim=c(40,180),
+                   ticktype = "detailed",bty = "f",box = TRUE,
+                   #panel.first = panelfirst,
+                   theta = 60, phi = 20, d=3,
+                   colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+
+breaks<-round(seq(500,2000,length.out=4),3)
+
+legend("right",title =  "Weight",legend=breaks,pch=21,
+       pt.cex=rescale(breaks, c(.5, 5)),y.intersp=1.6,cex=1,
+       pt.bg = "#ED5E3C",bg="white",bty="n")
+
+#-------------------------------------------------------------------------------------
+index <- ceiling(((prc <- 0.7 * df$Weight/ diff(range(df$Weight))) - min(prc) + 0.3)*100)
+for (i in seq(1,length(index)) ){
+  prc[i]=colormap[index[i]]
+}
+pmar <- par(mar = c(5.1, 4.1, 4.1, 6.1))
+with(df, scatter3D(x = mph, y = Gas_Mileage, z = Power, #bgvar = mag,
+                   pch = 21, cex = rescale(df$Weight, c(.5, 5)),col="black",bg=prc,
+                   xlab = "0-60 mph (sec)",
+                   ylab = "Gas Mileage (mpg)",
+                   zlab = "Power (kW)", 
+                   zlim=c(40,180),
+                   ticktype = "detailed",bty = "f",box = TRUE,
+                   theta = 60, phi = 20, d=3,
+                   colkey = FALSE)
+)
+#colkey (col=colormap,clim=range(df$Weight),clab = "Weight", add=TRUE, length=0.5,side = 4)
+
+breaks<-round(seq(500,2000,length.out=4),3)
+
+legend_index <- ceiling(((legend_prc <- 0.7 *breaks/ diff(range(breaks))) - min(legend_prc) + 0.3)*100)
+for (i in seq(1,length(legend_index)) ){
+  legend_prc[i]=colormap[legend_index[i]]
+}
+legend("right",title =  "Weight",legend=breaks,pch=21,
+       pt.cex=rescale(breaks, c(.5, 5)),y.intersp=1.6,
+       pt.bg = legend_prc,bg="white",bty="n")
+
+
+#-----------------------------------¶àÊý¾ÝÏµÁÐ--------------------------------
+library(wesanderson)
+pmar <- par(mar = c(5.1, 4.1, 4.1, 7.1))
+colors0 <-  wes_palette(n=3, name="Darjeeling1")
+colors <- colors0[as.numeric(iris$Species)]
+with(iris, scatter3D(x = Sepal.Length, y = Sepal.Width, z = Petal.Length, #bgvar = mag,
+                   pch = 21, cex = 1.5,col="black",bg=colors,
+                   xlab = "longitude", ylab = "latitude",
+                   zlab = "depth, km", 
+                   ticktype = "detailed",bty = "f",box = TRUE,
+                   #panel.first = panelfirst,
+                   theta = 140, phi = 20, d=3,
+                   colkey = FALSE)#list(length = 0.5, width = 0.5, cex.clab = 0.75))
+)
+
+legend("right",title =  "Species",legend=c("setosa", "versicolor", "virginica"),pch=21,
+       cex=1,y.intersp=1,pt.bg = colors0,bg="white",bty="n")
+
+```
+
+
+# 第5章 数据分布型图表
+
+## 图5-0-1数据分布型图表总预览
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+#Reference：https://github.com/hadley/boxplots-paper
+
+# #---------------------------数据的准备与导入----------------------
+
+library(RColorBrewer)
+library(ggplot2)
+
+mydata<-read.csv("./第5章 数据分布型图表/Norm.csv",stringsAsFactors=FALSE,header=TRUE) #以3为均值，1为标准差的正态分布
+
+mydata$Class<-rep("Class",nrow(mydata))
+colnames(mydata)<-c("Value","Class")
+
+color<-brewer.pal(7,"Set2")[c(1,2,4,5)]
+
+#----------------------------------------------------(a)散点抖动图-------------------------------------------------------------
+p <- ggplot(mydata, aes(Class, Value))+
+  geom_jitter(fill =color[4],position = position_jitter(0.2),shape=21, size = 3)+
+  scale_y_continuous(breaks=seq(0,6,1))+
+  theme_classic()+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        axis.title.x = element_blank(),
+        legend.position="none"
+  )
+p
+
+#-----------------------------------------------------(b) 蜂巢图-----------------------------------------------------------------
+library(beeswarm)
+
+class<-mydata$Class
+value<-mydata$Value
+beeswarm<-beeswarm(value~class, data = mydata,method = 'swarm')[, c(1, 2, 6)]
+
+colnames(beeswarm) <- c("x", "y","Class")
+
+ggplot(beeswarm, aes(x,y)) +
+  geom_point(fill = color[4],shape=21,colour="black",size=3.5)+
+  scale_fill_manual(values= c(brewer.pal(7,"Set2")[c(1,2,4,5)]))+ 
+  scale_y_continuous(breaks=seq(0,6,1))+
+  xlab("Class")+
+  ylab("Value")+
+  theme_classic()+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        legend.position="none"
+  )
+
+
+#----------------------------------------------(c)点状图--------------------------------------------------------------------------------
+p <- ggplot(mydata, aes(Class, Value))+
+  geom_dotplot(fill =color[4],binaxis='y', stackdir='center', dotsize = 0.8)+
+  scale_y_continuous(breaks=seq(0,6,1))+
+  theme_classic()+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        legend.position="none"
+  )
+p
+
+#----------------------------------------------(d)统计直方图--------------------------------------------------------------------
+
+ggplot(mydata, aes(Value,  fill=Value))+ 
+  geom_histogram(alpha=1,fill=color[4],colour="black",size=0.25)+#binwidth = 1,
+  coord_flip()+
+  theme_classic()+
+  scale_x_continuous(breaks=seq(0,6,1))+
+  theme(
+    panel.background  = element_rect(color="black"),
+    text=element_text(size=15,color="black"),
+    plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.position=c(0.8,0.8),
+    legend.background = element_blank()
+  )
+#----------------------------------------------(e)核密度估计图--------------------------------------------------------------------
+ggplot(mydata, aes(Value,  fill=Value))+ 
+  geom_density(alpha=1,colour="black",size=0.25,fill=color[4])+
+  coord_flip()+
+  theme_classic()+
+  scale_x_continuous(breaks=seq(0,6,1))+
+  theme(
+    panel.background  = element_rect(color="black"),
+    text=element_text(size=15,color="black"),
+    plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+    legend.position=c(0.8,0.8),
+    legend.background = element_blank()
+  )
+
+
+
+#-------------------------------------------(f)带误差线的散点图-------------------------------------------------
+p <- ggplot(mydata, aes(Class, Value))+
+  geom_dotplot(fill="white",binaxis='y', stackdir='center', dotsize = 0.8)+
+  stat_summary(fill = color[4],fun.data="mean_sdl", fun.args = list(mult=1),
+               geom="pointrange", color = "black",size =2 ,shape=21)+
+  
+  scale_y_continuous(breaks=seq(0,6,1))+
+  ylab("Value")+
+  theme_classic()+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        legend.position="none"
+  )
+p
+
+#-----------------------------------------------(g)带误差线的柱形图----------------------------------------------------
+
+p <- ggplot(mydata, aes(Class, Value))+ 
+  stat_summary(fill =color[4],fun.y=mean, geom='bar',colour="black",width=.7,size=0.5) +
+  stat_summary(fun.data = mean_sdl, geom='errorbar', color='black',width=.2,size=0.5) + 
+  geom_jitter(fill ="white",position = position_jitter(0.2),shape=21, size = 2,alpha=0.9)+
+  scale_y_continuous(breaks=seq(0,6,1))+
+  ylab("Value")+
+  theme_classic()+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        legend.position="none"
+  )
+p
+
+#------------------------------------------------(h) 梯度图--------------------------------------------------
+library(denstrip)
+#pdf("images/four-denstrip2.pdf", width = 4, height = 4)
+par(mar = c(2.1, 2.1, .1, .1))
+plot(c(0.5, 1.5), range(mydata$Value), type = "n", axes = F, xlab = "Class", ylab = "Value")
+rect(-10, -10, 10, 10, col = "white")
+denstrip(mydata$Value, at = 1,mticks=mean(mydata$Value), hor = F, width = 0.75, bw = 0.2, colmax=brewer.pal(7,"Set2")[c(5)],
+         colmin="white",mlen=1.1,mcol="black")
+box()
+axis(2)
+axis(1, at = 1, labels = "Class")
+
+
+#------------------------------------------------(i) 箱型图--------------------------------------------------
+p <- ggplot(mydata, aes(Class, Value))+ 
+  geom_boxplot(fill =color[4],notch = FALSE) +
+  theme_classic()+
+  scale_y_continuous(breaks=seq(0,6,1))+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        legend.position="none"
+  )
+p
+
+#------------------------------------------------(j) 带凹槽的箱型图--------------------------------------------------
+p <- ggplot(mydata, aes(Class, Value))+ 
+  geom_boxplot(fill =color[4],notch = TRUE) +
+  theme_classic()+
+  scale_y_continuous(breaks=seq(0,6,1))+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        legend.position="none"
+  )
+p
+
+#---------------------------------------------------------(k)瓶状图----------------------------------------------------
+source("./第5章 数据分布型图表/boxplots-vase.r")
+par(mar = c(2.1, 2.1, .1, .1))
+vase(split(mydata$Value, mydata$Class),  bw = 0.15)
+axis(side = 2)
+xlab("Class")
+
+
+#------------------------------------------------------ (l)豆状图----------------------------------------------------
+library(beanplot)
+par(mar = c(2.1, 2.1, 2.1, 2.1))
+beanplot(Value ~Class, data = mydata,col=color[4],xlab ="Class",ylab ="value")#,ylim =c(-3,3))
+
+
+#------------------------------------------------------(m)小提琴图------------------------------------------------
+
+p <- ggplot(mydata, aes(Class, Value))+ 
+  geom_violin(fill =color[4],trim = FALSE)+
+  geom_boxplot(width = 0.2)+
+  scale_y_continuous(breaks=seq(0,6,1))+
+  theme(panel.background=element_rect(fill="white",colour="black",size=0.25),
+        axis.line=element_line(colour="black",size=0.25),
+        axis.title=element_text(size=13,face="plain",color="black"),
+        axis.text = element_text(size=12,face="plain",color="black"),
+        legend.position="none"
+  )
+p
+
+#----------------------------------------------------(n)海盗图--------------------------------------------------------------------
+library(yarrr)
+head(pirates)
+pirateplot(formula =  mydata$Value~mydata$Class, data =mydata, 
+           theme.o = 2,
+           xlab = "", ylab = "Value", main = "",
+           # Choose your color palette, or give common color vector
+           pal = color[1],#"google",
+           #gl.col = color[4],
+           # Set transparency of the elements:
+           #bean.b.col="black",
+           bean.f.col=color[4],
+           bar.b.col="black",
+           line.o = 0.9,
+           bar.o = .4,
+           bean.o = .1,
+           point.o = .9,
+           # Shape of point
+           #point.pch = 2,
+           #Background color
+           #back.col = "white",
+           ylim=c(0,6),
+           gl.col = "white", # gridlines
+           gl.lwd = c(.5, 0)
+)
+
+
+```
+
+
+## 图5-1-1 直方图和核密度估计图
+
+```{r}
+
+#EasyCharts团队出品，如有商用必究，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+#---------------------------------------图5-1-2核密度估计峰峦图--------------------------------------
+
+
+library(ggplot2)
+library(ggridges)
+library(RColorBrewer)
+
+ggplot(lincoln_weather, aes(x = `Mean Temperature [F]`, y = `Month`, fill = ..density..)) + 
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.00,size = 0.3) + 
+  scale_fill_gradientn(colours = colorRampPalette(rev(brewer.pal(11,'Spectral')))(32))
+
+###------------------------------自定义编写代码实现：图5-1-2核密度估计峰峦图-------------------------------
+library(reshape2)
+
+colormap <- colorRampPalette(rev(brewer.pal(11,'Spectral')))(32)
+
+dt<-lincoln_weather[,c("Month","Mean Temperature [F]")]
+splitdata<-split(dt,dt$Month)
+xmax<-max(dt$`Mean Temperature [F]`)*1.1
+xmin<-min(dt$`Mean Temperature [F]`)*1.1
+
+
+N<-length(splitdata)
+labels_y<-names(splitdata)
+
+mydata<-data.frame(x=numeric(),y=numeric(),variable=numeric()) #创建空的Data.Frame
+
+for (i in 1:N){
+  tempy<-density(splitdata[[i]][2]$`Mean Temperature [F]`,bw = 3.37,from=xmin, to=xmax)
+  newdata<-data.frame(x=tempy$x,y=tempy$y)
+  newdata$variable<-i
+  mydata<-rbind(mydata,newdata)
+}
+
+Step<-max(mydata$y)*0.6
+mydata$offest<--as.numeric(mydata$variable)*Step
+mydata$V1_density_offest<-mydata$y+mydata$offest
+
+p<-ggplot()
+for (i in 1:N){
+  p<-p+ geom_linerange(data=mydata[mydata$variable==i,],aes(x=x,ymin=offest,ymax=V1_density_offest,group=variable,color=y),size =1, alpha =1) +
+        geom_line(data=mydata[mydata$variable==i,],aes(x=x, y=V1_density_offest),color="black",size=0.5)
+}
+
+p+scale_color_gradientn(colours=colormap,name="Density")+
+  scale_y_continuous(breaks=seq(-Step,-Step*N,-Step),labels=labels_y)+
+  xlab("Mean Temperature [F]")+
+  ylab("Month")+
+  theme_classic()+
+  theme(
+    panel.background=element_rect(fill="white",colour=NA),
+    panel.grid.major.x = element_line(colour = "grey80",size=.25),
+    panel.grid.major.y = element_line(colour = "grey60",size=.25),
+    axis.line = element_blank(),
+    text=element_text(size=15,colour = "black"),
+    plot.title=element_text(size=15,hjust=.5),
+    legend.position="right"
+  )
+
+
+
+```
+
+## 图5-1-3 二维散点与统计分布组合图
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+
+#-------------------------------------------Method 1: ggpubr包的ggscatterhist()函数------------------------------
+library(ggpubr)
+
+N<-300
+x1 <- rnorm(mean=1.5, N)
+y1 <- rnorm(mean=1.6, N)
+x2 <- rnorm(mean=2.5, N)
+y2 <- rnorm(mean=2.2, N)
+
+data1 <- data.frame(x=c(x1,x2),y=c(y1,y2))
+
+#(a) 二维散点与统计直方图
+ggscatterhist(
+  data1, x ='x', y = 'y', shape=21,fill="#00AFBB",color = "black",size = 3, alpha = 1,
+  #palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+  margin.params = list( fill="#00AFBB",color = "black", size = 0.2,alpha=1),
+  margin.plot =  "histogram",
+  legend = c(0.8,0.8),
+  ggtheme = theme_minimal())
+
+N<-200
+x1 <- rnorm(mean=1.5, sd=0.5,N)
+y1 <- rnorm(mean=2,sd=0.2, N)
+x2 <- rnorm(mean=2.5,sd=0.5, N)
+y2 <- rnorm(mean=2.5,sd=0.5, N)
+x3 <- rnorm(mean=1, sd=0.3,N)
+y3 <- rnorm(mean=1.5,sd=0.2, N)
+
+data2 <- data.frame(x=c(x1,x2,x3),y=c(y1,y2,y3),class=rep(c("A","B","C"),each=200))
+
+#(b) 二维散点与核密度估计图
+ggscatterhist(
+  data2,  x ='x', y = 'y',  #iris
+  shape=21,color ="black",fill= "class", size =3, alpha = 0.8,
+  palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+  margin.plot =  "density",
+  margin.params = list(fill = "class", color = "black", size = 0.2),
+  legend = c(0.9,0.15),
+  ggtheme = theme_minimal())
+
+
+#-----------------------------------Method 2: ggExtra包的ggMarginal()函数------------------------------------
+
+library(ggExtra)
+
+#(a) 二维散点与统计直方图
+scatter <- ggplot(data=data1,aes(x=x,y=y)) + 
+  geom_point(shape=21,fill="#00AFBB",color="black",size=3)+
+  theme_minimal()+
+  theme(
+    #text=element_text(size=15,face="plain",color="black"),
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=13,face="plain",color="black"),
+    legend.text= element_text(size=13,face="plain",color="black"),
+    legend.title=element_text(size=12,face="plain",color="black"),
+    legend.background=element_blank()
+    #legend.position = c(0.12,0.88)
+  )
+
+ggMarginal(scatter,type="histogram",color="black",fill="#00AFBB")
+
+
+#(b) 二维散点与核密度估计图
+scatter <- ggplot(data=data2,aes(x=x,y=y,colour=class,fill=class)) + 
+  geom_point(aes(fill=class),shape=21,size=3)+#,colour="black")+
+  scale_fill_manual(values= c("#00AFBB", "#E7B800", "#FC4E07"))+
+  scale_colour_manual(values=c("#00AFBB", "#E7B800", "#FC4E07"))+
+  theme_minimal()+
+  theme(
+    #text=element_text(size=15,face="plain",color="black"),
+    axis.title=element_text(size=15,face="plain",color="black"),
+    axis.text = element_text(size=13,face="plain",color="black"),
+    legend.text= element_text(size=13,face="plain",color="black"),
+    legend.title=element_text(size=12,face="plain",color="black"),
+    legend.background=element_blank(),
+    legend.position = c(0.9,0.15)
+  )
+
+ggMarginal(scatter,type="density",color="black",groupColour = FALSE,groupFill = TRUE)
+
+#-----------------------------------method 3:grid.arrange()函数------------------------------
+library(gridExtra)
+#(a) 二维散点与统计直方图
+
+# 绘制主图散点图，并将图例去除，这里point层和path层使用了不同的数据集
+scatter <- ggplot() + 
+  geom_point(data=data1,aes(x=x,y=y),shape=21,color="black",size=3)+
+   theme_minimal()
+# 绘制上边的直方图，并将各种标注去除
+hist_top <- ggplot()+
+  geom_histogram(aes(data1$x),colour='black',fill='#00AFBB',binwidth = 0.3)+
+  theme_minimal()+
+  theme(panel.background=element_blank(),
+        axis.title.x=element_blank(), 
+        axis.title.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank())
+# 同样绘制右边的直方图
+hist_right <- ggplot()+
+  geom_histogram(aes(data1$y),colour='black',fill='#00AFBB',binwidth = 0.3)+
+  theme_minimal()+
+  theme(panel.background=element_blank(),
+        axis.title.x=element_blank(), 
+        axis.title.y=element_blank(),
+        #axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank())+
+  coord_flip()
+
+empty <- ggplot() +
+  theme(panel.background=element_blank(),
+        axis.title.x=element_blank(), 
+        axis.title.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank())
+# 要由四个图形组合而成，可以用空白图作为右上角的图形也可以，但为了好玩加上了R的logo，这是一种在ggplot中增加jpeg位图的方法
+# logo <-  read.jpeg("d:\\Rlogo.jpg")
+# empty <- ggplot(data.frame(x=1:10,y=1:10),aes(x,y))+
+#   annotation_raster(logo,-Inf, Inf, -Inf, Inf)+
+#   opts(axis.title.x=theme_blank(), 
+#        axis.title.y=theme_blank(),
+#        axis.text.x=theme_blank(),
+#        axis.text.y=theme_blank(),
+#        axis.ticks=theme_blank())
+# 最终的组合
+grid.arrange(hist_top, empty, scatter, hist_right, ncol=2, nrow=2, widths=c(4,1), heights=c(1,4))
+
+#(b) 二维散点与核密度估计图
+
+# 绘制主图散点图，并将图例去除，这里point层和path层使用了不同的数据集
+scatter <- ggplot() + 
+  geom_point(data=data2,aes(x=x,y=y,fill=class),shape=21,color="black",size=3)+
+  scale_fill_manual(values= c("#00AFBB", "#E7B800", "#FC4E07"))+
+  theme_minimal()+
+  theme(legend.position=c(0.9,0.2))
+# 绘制上边的直方图，并将各种标注去除
+hist_top <- ggplot()+
+  geom_density(data=data2,aes(x,fill=class),colour='black',alpha=0.7)+
+  scale_fill_manual(values= c("#00AFBB", "#E7B800", "#FC4E07"))+
+  theme_void()+
+  theme(legend.position="none")
+# 同样绘制右边的直方图
+hist_right <- ggplot()+
+  geom_density(data=data2,aes(y,fill=class),colour='black',alpha=0.7)+
+  scale_fill_manual(values= c("#00AFBB", "#E7B800", "#FC4E07"))+
+  theme_void()+
+  coord_flip()+
+  theme(legend.position="none")
+
+empty <- ggplot() +
+  theme(panel.background=element_blank(),
+        axis.title.x=element_blank(), 
+        axis.title.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank())
+# 要由四个图形组合而成，可以用空白图作为右上角的图形也可以，但为了好玩加上了R的logo，这是一种在ggplot中增加jpeg位图的方法
+# logo <-  read.jpeg("d:\\Rlogo.jpg")
+# empty <- ggplot(data.frame(x=1:10,y=1:10),aes(x,y))+
+#   annotation_raster(logo,-Inf, Inf, -Inf, Inf)+
+#   opts(axis.title.x=theme_blank(), 
+#        axis.title.y=theme_blank(),
+#        axis.text.x=theme_blank(),
+#        axis.text.y=theme_blank(),
+#        axis.ticks=theme_blank())
+# 最终的组合
+grid.arrange(hist_top, empty, scatter, hist_right, ncol=2, nrow=2, widths=c(4,1), heights=c(1,4))
+
+
+```
+
+
+## 图5-2-1 四种不同数据分析的统计直方图
+
+```{r eval=FALSE}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+if(FALSE) {
+  library(ggplot2)
+  library(RColorBrewer)
+  library(SuppDists) #提供rJohnson()函数
+  
+  set.seed(141079)
+  
+  # Generate sample data -------------------------------------------------------
+  #findParams函数参考：https://github.com/hadley/boxplots-paper
+  
+  findParams <- function(mu, sigma, skew, kurt) {
+    value <- .C(
+      "JohnsonMomentFitR",
+      as.double(mu),
+      as.double(sigma),
+      as.double(skew),
+      as.double(kurt - 3),
+      gamma = double(1),
+      delta = double(1),
+      xi = double(1),
+      lambda = double(1),
+      type = integer(1),
+      PACKAGE = "SuppDists"
+    )
+    
+    list(
+      gamma = value$gamma,
+      delta = value$delta,
+      xi = value$xi,
+      lambda = value$lambda,
+      type = c("SN", "SL", "SU", "SB")[value$type]
+    )
+  }
+  # 均值为3，标准差为1的正态分布
+  n <- rnorm(100, 3, 1)
+  # Johnson分布的偏斜度2.2和峰度13
+  s <- rJohnson(100, findParams(3, 1, 2., 13.1))
+  # Johnson分布的偏斜度0和峰度20）
+  k <- rJohnson(100, findParams(3, 1, 2.2, 20))
+  # 两个峰的均值μ1，μ2分别为1.89和3.79，σ1 = σ2 =0.31
+  mm <- rnorm(100, rep(c(2, 4), each = 50) * sqrt(0.9), sqrt(0.1))
+  
+  mydata <- data.frame(Class = factor(rep(c("n", "s", "k", "mm"), each = 100),
+                                      c("n", "s", "k", "mm")),
+                       Value = c(n, s, k, mm))
+  
+  #--------------------------------------图5-2-1四种不同数据分析的分布类图表. (b)核密度估计曲线图.-----------------------------------------------------------
+  ggplot(mydata, aes(Value, fill = Class)) +
+    geom_density(
+      alpha = 1,
+      bw = 0.3,
+      colour = "black",
+      size = 0.25
+    ) +
+    scale_fill_manual(values = brewer.pal(7, "Set2")[c(1, 2, 4, 5)]) +
+    facet_grid(Class ~ .) +
+    xlab("X") +
+    ylab("Desnity") +
+    theme_light() +
+    theme(
+      strip.text = element_text(size = 15, color = "black"),
+      text = element_text(size = 15, color = "black"),
+      plot.title = element_text(
+        size = 15,
+        family = "myfont",
+        face = "bold.italic",
+        hjust = .5,
+        color = "black"
+      ),
+      legend.position = "none"
+    )
+  
+  
+  #----------图5-2-1四种不同数据分析的分布类图表. (a) 统计直方图---------------
+  
+  library(reshape2)
+  
+  type <- as.character(unique(mydata$Class))
+  step <- 0.2
+  breaks <- seq(min(mydata$Value) - step, max(mydata$Value) + step, step)
+  
+  mydata1 <-
+    data.frame(xvals = numeric(),
+               yvals = numeric(),
+               variable = character()) #创建空的Data.Frame
+  for (i in 1:length(type)) {
+    x <- mydata[mydata$Class == type[i], 2] #rnorm(250 , mean=10 , sd=1)
+    hg <-
+      hist(x, breaks = breaks , plot = FALSE) # Make histogram data but do not plot
+    dat <-
+      data.frame(
+        xvals = hg$mids,
+        yvals = hg$counts,
+        variable = rep(type[i], length(hg$mids))
+      )
+    mydata1 <- rbind(mydata1, dat[dat$yvals > 0, ])
+    
+  }
+  
+  mydata2 <-
+    data.frame(xvals = numeric(),
+               value = numeric(),
+               variable = character()) #创建空的Data.Frame
+  for (i in 1:nrow(mydata1)) {
+    N <- mydata1$yvals[i]
+    temp <-
+      data.frame(
+        xvals = rep(mydata1$xvals[i], N),
+        value = 1:N,
+        variable = rep(mydata1$variable[i], N)
+      )
+    mydata2 <- rbind(mydata2, temp)
+  }
+  
+  ggplot(mydata2, aes(x = xvals, y = value, fill = variable)) +
+    geom_point(shape = 21,
+               size = 3,
+               colour = "black") +
+    scale_fill_manual(values = brewer.pal(7, "Set2")[c(1, 2, 4, 5)]) +
+    facet_grid(variable ~ .) +
+    xlab("Bins") +
+    ylab("Count") +
+    theme_light() +
+    theme(
+      strip.text = element_text(size = 15, color = "black"),
+      text = element_text(size = 15, color = "black"),
+      plot.title = element_text(
+        size = 15,
+        family = "myfont",
+        face = "bold.italic",
+        hjust = .5,
+        color = "black"
+      ),
+      legend.position = "none"
+    )
+  
+  
+  
+}
+
+```
+# 第6章 时间序列型图表
+
+## 图6-1-1 面积图系列
+
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+library(reshape2)
+
+
+#-------------------------图6-1-1 多数据系列图. (a)折线图-------------------------
+
+
+mydata<-read.csv("./第6章 时间序列型图表/Line_Data.csv",stringsAsFactors=FALSE) 
+
+head(mydata)
+mydata$date<-as.Date(mydata$date)
+
+mydata<-melt(mydata,id="date")
+head(mydata)
+ggplot(mydata, aes(x =date, y = value,color=variable) )+
+  #geom_area(fill="#FF6B5E",alpha=0.75)+ 
+  geom_line(size=1)+
+  scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+  xlab("Year")+ 
+  ylab("Value")+
+  theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"),
+         legend.position = c(0.15,0.8),
+         legend.background = element_blank()) 
+
+#-----图6-1-1 多数据系列图.(b)面积图.-------------------------
+ggplot(mydata, aes(x =date, y = value,group=variable) )+
+  geom_area(aes(fill=variable),alpha=0.5,position="identity")+ 
+  geom_line(aes(color=variable),size=0.75)+#color="black",
+  scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+  xlab("Year")+ 
+  ylab("Value")+
+  theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"),
+         legend.position = c(0.15,0.8),
+         legend.background = element_blank()) 
+
+
+#----图6-1-2 填充面积折线图. (a)纯色填充-------------------
+mydata<-read.csv("./第6章 时间序列型图表/Area_Data.csv",stringsAsFactors=FALSE) 
+mydata$date<-as.Date(mydata$date)
+head(mydata)
+ggplot(mydata, aes(x =date, y = value) )+
+  geom_area(fill="#FF6B5E",alpha=0.75)+ 
+  geom_line(color="black",size=0.75)+
+  scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+  xlab("Year")+ 
+  ylab("Value")+
+  theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black")) 
+
+
+#-----图6-1-2 填充面积折线图.(b)颜色映射填充.------------------------
+
+x<-as.numeric(mydata$date)
+newdata<-data.frame(spline(x,mydata$value,n=1000,method= "natural"))
+newdata$date<-as.Date(newdata$x,origin = "1970-01-01")
+head(newdata)
+ggplot(newdata, aes(x =date, y = y) )+ #geom_area(fill="#FF6B5E",alpha=0.75)
+  geom_bar(aes(fill=y,colour=y),stat = "identity",alpha=1,width = 1)+ 
+  geom_line(color="black",size=0.5)+
+  scale_color_gradientn(colours=brewer.pal(9,'Reds'),name = "Value")+
+  scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+  xlab("Year")+ 
+  ylab("Value")+
+  guides(fill=FALSE)+
+  theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"),
+         legend.position = c(0.12,0.75),
+         legend.background = element_blank() )
+
+#----图6-1-3 夹层填充面积图. (a)单色------------------------------
+
+mydata<-read.csv("./第6章 时间序列型图表/Line_Data.csv",stringsAsFactors=FALSE) 
+mydata$date<-as.Date(mydata$date)
+
+mydata1<-mydata
+
+mydata1$ymin<-apply(mydata1[,c(2,3)], 1, min)
+mydata1$ymax<-apply(mydata1[,c(2,3)], 1, max)
+head(mydata1)
+ggplot(mydata1, aes(x =date))+
+  geom_ribbon( aes(ymin=ymin, ymax=ymax),alpha=0.5,fill="white",color=NA)+
+  #geom_area(aes(fill=variable),alpha=0.5,position="identity")+ 
+  geom_line(aes(y=AMZN,color="#FF6B5E"),size=0.75)+#color="black",
+  geom_line(aes(y=AAPL,color="#00B2F6"),size=0.75)+#color="black",
+   scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+   xlab("Year")+ 
+   ylab("Value")+
+   scale_colour_manual(name = "Variable", 
+                       labels = c("AMZN", "AAPL"),
+                       values = c("#FF6B5E", "#00B2F6"))+
+   theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"),
+         legend.position = c(0.15,0.8),
+         legend.background = element_blank()) 
+
+#--图6-1-3 夹层填充面积图.  (b)多色------------------------------
+mydata1$ymin<-apply(mydata1[,c(2,3)], 1, min)
+mydata1$ymax<-apply(mydata1[,c(2,3)], 1, max)
+
+mydata1$ymin1<-mydata1$ymin
+mydata1$ymin1[as.integer((mydata1$AAPL-mydata1$AMZN)>0)]=NA
+
+mydata1$ymax1<-mydata1$ymax
+mydata1$ymax1[as.integer((mydata1$AAPL-mydata1$AMZN)>0)==0]=NA
+
+mydata1$ymin2<-mydata1$ymin
+mydata1$ymin2[as.integer((mydata1$AAPL-mydata1$AMZN)<=0)==0]=NA
+
+mydata1$ymax2<-mydata1$ymax
+mydata1$ymax2[as.integer((mydata1$AAPL-mydata1$AMZN)<=0)==0]=NA
+
+
+ggplot(mydata1, aes(x =date))+
+  geom_ribbon( aes(ymin=ymin1, ymax=ymax1),alpha=0.5,fill="#FF6B5E",color=NA)+#,fill = AMZN > AAPL
+  geom_ribbon( aes(ymin=ymin2, ymax=ymax2),alpha=0.5,fill="#00B2F6",color=NA)+#,fill = AMZN > AAPL
+  #geom_area(aes(fill=variable),alpha=0.5,position="identity")+ 
+  geom_line(aes(y=AMZN,color="#FF6B5E"),size=0.75)+#color="black",
+  geom_line(aes(y=AAPL,color="#00B2F6"),size=0.75)+#color="black",
+  scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+  xlab("Year")+ 
+  ylab("Value")+
+  scale_colour_manual(name = "Variable", 
+                      labels = c("AMZN", "AAPL"),
+                      values = c("#FF6B5E", "#00B2F6"))+
+  theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"),
+         legend.position = c(0.15,0.8),
+         legend.background = element_blank()) 
+
+#--------------------------------图6-1-3 夹层填充面积图.(c)颜色映射填充.------------------------------------------
+library(ggridges)
+ggplot(mydata1, aes(x=date)) +
+  geom_ridgeline_gradient( aes(y=ymin, height = ymax-ymin,  fill = ymax-ymin)) +
+  geom_line(aes(y=AMZN),color="black",size=0.75)+#color="black",
+  geom_line(aes(y=AAPL),color="black",size=0.75)+#color="black",
+  scale_fill_gradientn(colours= brewer.pal(9,'RdBu'),name = "Value")+
+  theme(legend.position = c(0.15,0.8),
+        legend.background = element_blank()) 
+
+```
+## 图6-1-5 堆积面积图
+
+```{r 堆积面积图}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+library(reshape2)
+
+
+mydata<-read.csv("./第6章 时间序列型图表/StackedArea_Data.csv",stringsAsFactors=FALSE) 
+mydata$Date<-as.Date(mydata$Date)
+
+#---图6-1-4堆积面积图.(a) 堆积面积图--------------------------------
+mydata<-melt(mydata,id="Date")
+head(mydata)
+ggplot(mydata, aes(x =Date, y = value,fill=variable) )+
+  geom_area(position="stack",alpha=1)+ 
+  geom_line(position="stack",size=0.25,color="black")+
+  scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+  xlab("Year")+ 
+  ylab("Value")+
+  theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"),
+         legend.position = "right",
+         legend.background = element_blank()) 
+
+#-----图6-1-4堆积面积图.  (b)百分比堆积面积图.----------------------------------
+ggplot(mydata, aes(x =Date, y = value,fill=variable) )+
+  geom_area(position="fill",alpha=1)+ 
+  geom_line(position="fill",size=0.25,color="black")+
+  scale_x_date(date_labels = "%Y",date_breaks = "2 year")+
+  xlab("Year")+ 
+  ylab("Value")+
+  theme( axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"),
+         legend.position = "right",
+         legend.background = element_blank()) 
+
+```
+
+## 图6-2-2 日历图
+
+```{r}
+
+#EasyCharts团队出品，如有商用必究，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(ggplot2)
+library(data.table) #提供data.table()函数
+library(ggTimeSeries)
+library(RColorBrewer)
+set.seed(1234)
+dat <- data.table(
+  date = seq(as.Date("1/01/2014", "%d/%m/%Y"),as.Date("31/12/2017", "%d/%m/%Y"),"days"),
+  ValueCol = runif(1461)
+)
+dat[, ValueCol := ValueCol + (strftime(date,"%u") %in% c(6,7) * runif(1) * 0.75), .I]
+dat[, ValueCol := ValueCol + (abs(as.numeric(strftime(date,"%m")) - 6.5)) * runif(1) * 0.75, .I]
+
+dat$Year<- as.integer(strftime(dat$date, '%Y'))   #年份
+dat$month <- as.integer(strftime(dat$date, '%m')) #月份
+dat$week<- as.integer(strftime(dat$date, '%W'))   #周数
+
+MonthLabels <- dat[,list(meanWkofYr = mean(week)), by = c('month') ]
+MonthLabels$month <-month.abb[MonthLabels$month]
+
+ggplot(data=dat,aes(date=date,fill=ValueCol))+
+  stat_calendar_heatmap()+
+  scale_fill_gradientn(colours= rev(brewer.pal(11,'Spectral')))+ 
+  facet_wrap(~Year, ncol = 1,strip.position = "right")+
+  scale_y_continuous(breaks=seq(7, 1, -1),labels=c("Mon","Tue","Wed","Thu","Fri","Sat","Sun"))+
+  scale_x_continuous(breaks = MonthLabels[,meanWkofYr], labels = MonthLabels[, month],expand = c(0, 0)) +
+  xlab(NULL)+ 
+  ylab(NULL)+
+  theme( panel.background = element_blank(),
+         panel.border = element_rect(colour="grey60",fill=NA),
+         strip.background = element_blank(),
+         strip.text = element_text(size=13,face="plain",color="black"),
+         axis.line=element_line(colour="black",size=0.25),
+         axis.title=element_text(size=10,face="plain",color="black"),
+         axis.text = element_text(size=10,face="plain",color="black"))
+
+#---------------------------------------------------------
+library(dplyr)
+dat17 <- filter(dat,Year==2017)[,c(1,2)]
+
+dat17$month <- as.integer(strftime(dat17$date, '%m'))  #月份
+dat17$monthf<-factor(dat17$month,levels=as.character(1:12),
+                     labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"),ordered=TRUE)
+dat17$weekday<-as.integer(strftime(dat17$date, '%u'))#周数
+dat17$weekdayf<-factor(dat17$weekday,levels=(1:7),
+                       labels=(c("Mon","Tue","Wed","Thu","Fri","Sat","Sun")),ordered=TRUE)
+dat17$yearmonth<- strftime(dat17$date, '%m%Y')   #月份
+dat17$yearmonthf<-factor(dat17$yearmonth)
+dat17$week<- as.integer(strftime(dat17$date, '%W'))#周数
+
+dat17<-dat17 %>% group_by(monthf)%>%mutate(monthweek=1+week-min(week))
+
+dat17$day<-strftime(dat17$date, "%d")
+
+ggplot(dat17, aes(weekdayf, monthweek, fill=ValueCol)) + 
+  geom_tile(colour = "white") + 
+  scale_fill_gradientn(colours=rev(brewer.pal(11,'Spectral')))+
+  geom_text(aes(label=day),size=3)+
+  facet_wrap(~monthf ,nrow=3) +
+  scale_y_reverse()+
+  xlab("Day") + ylab("Week of the month") +
+  theme(strip.text = element_text(size=11,face="plain",color="black"))
+
+```
+
+
+## 图6-3-2 不同形式的螺旋图
+
+```{r}
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library(RColorBrewer)
+
+colormap <- colorRampPalette(brewer.pal(9,'YlGnBu'))(9)
+
+dat <- read_excel("./第6章 时间序列型图表/SpiralChart_Data.xlsx")
+
+dat$time <-  with(dat, as.POSIXct(paste(Date, Time), tz="GMT"))  #把日期转换成POSIXct格式
+dat$hour <-  as.numeric(dat$time) %% (24*60*60) / 3600 #时刻
+dat$day <- as.Date(dat$time)   #把天数转换成日期型
+dat$datt<-as.numeric(strftime(dat$day , "%d"))  #把天数转换成数值型
+dat$datt<-dat$datt-min(dat$datt)
+
+
+dat$Value <- as.numeric(dat$Value)
+dat$Value2<-dat$Value/max(dat$Value)
+
+N<-24
+width<-0.5
+
+#---------------------------------------图6-3-2 不同形式的螺旋图。(a) 螺旋柱形图--------------------------------
+
+bars <- dat %>% 
+  mutate(hour.group = cut(hour, breaks=seq(0,24,width), labels=seq(0,23.75,width),include.lowest=TRUE), 
+         hour.group = as.numeric(as.character(hour.group))) %>%
+  group_by(datt, hour.group) %>%
+  summarise(meanTT = mean(Value2))  %>%
+  mutate(value=meanTT*max(dat$Value),
+         xmin=  hour.group,
+         xmax = hour.group + width,
+         ymin = datt*N + hour.group,
+         ymax = datt*N + hour.group + meanTT*N*1.1)
+
+poly <- bars %>%
+  rowwise() %>%
+  do(with(., data_frame(day=datt,
+                        date=day,
+                        hour=hour.group,
+                        value=value,
+                        x = c(xmin, xmax, xmax, xmin),
+                        y = c(ymin ,
+                              ymin + width,
+                              ymax + width,
+                              ymax ))))
+
+ggplot(poly, aes(x, y, group = interaction(hour, day),fill=value)) +
+  geom_polygon(colour="black",size=0.25) +
+  scale_fill_gradientn(colours=colormap)+
+
+  ylab("Date")+
+  xlab("")+
+  theme_bw()+
+  coord_polar() +
+  
+  scale_y_continuous(limits=c(-N/2, max(poly$y)), 
+                       breaks=seq(N,max(poly$y),N),
+                       labels=unique(dat$day) )+
+  scale_x_continuous(limits=c(0,N), breaks=seq(0,N-1,1), minor_breaks=0:N,
+                     labels=paste0(rep(c(12,1:11),1), rep(c("AM","PM"),each=12))) +
+  theme( panel.background = element_blank(),
+         panel.border =  element_rect(fill=NA,colour = "grey80",size=.25),
+         panel.grid.major.y  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.major.x  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.minor.y  = element_blank(),
+         panel.grid.minor.x  = element_blank(),
+         axis.line = element_line(colour = "grey80",size=.25),
+         # panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+         axis.text.y = element_text(size = 10,colour="grey50"),#,hjust=0,vjust=1),
+         axis.line.y = element_line(size=0.25)
+  )
+ 
+
+#----------------------------------------图6-3-2 不同形式的螺旋图。(b) 螺旋热力图---------------------------------------------
+
+bars <- dat %>% 
+  mutate(hour.group = cut(hour, breaks=seq(0,24,width), labels=seq(0,23.75,width),include.lowest=TRUE), #
+         hour.group = as.numeric(as.character(hour.group))) %>%
+  group_by(datt, hour.group) %>%
+  summarise(meanTT = mean(Value2))  %>%
+  mutate(value=meanTT*max(dat$Value),
+         xmin=  hour.group,
+         xmax = hour.group + width,
+         ymin = datt*N + hour.group,
+         ymax = datt*N + hour.group + 24)
+
+poly <- bars %>%
+  rowwise() %>%
+  do(with(., data_frame(day=datt,
+                        date=day,
+                        hour=hour.group,
+                        value=value,
+                        x = c(xmin, xmax, xmax, xmin),
+                        y = c(ymin ,
+                              ymin + width,
+                              ymax + width,
+                              ymax ))))
+
+
+ggplot(poly, aes(x, y, group = interaction(hour, day),fill=value)) +
+  geom_polygon(colour="black",size=0.25) +
+  
+  coord_polar() +
+  # ylim(-20, max(poly$y)) +
+  #viridis::scale_fill_viridis(discrete = TRUE, option = 'C')# +
+  scale_x_continuous(limits=c(0,N), breaks=seq(0,N-1,1), minor_breaks=0:N,
+                     labels=paste0(rep(c(12,1:11),1), rep(c("AM","PM"),each=12))) +
+  scale_y_continuous(limits=c(-N/2, max(poly$y)), 
+                     breaks=seq(N,max(poly$y),N),
+                     labels=unique(dat$day) )+
+  
+  #scale_fill_gradient2(low="green", mid="yellow", high="red", midpoint=mean(bars$meanTT)) +
+  scale_fill_gradientn(colours=colormap)+
+  ylab("Date")+
+  xlab(NA)+
+  theme_bw()+
+  theme( panel.background = element_blank(),
+         panel.border =  element_rect(fill=NA,colour = "grey80",size=.25),
+         panel.grid.major.y  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.major.x  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.minor.y  = element_blank(),
+         panel.grid.minor.x  = element_blank(),
+         axis.line = element_line(colour = "grey80",size=.25),
+         # panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+         axis.text.y = element_text(size = 10,colour="grey50"),#,hjust=0,vjust=1),
+         axis.line.y = element_line(size=0.25)
+  )
+
+
+#-----------------------------------图6-3-3 不同形式的螺旋图和雷达图.(a) 径向热力图.------------------------------------
+
+bars <- dat %>% 
+  mutate(hour.group = cut(hour, breaks=seq(0,24,width), labels=seq(0,23.75,width),include.lowest=TRUE), #
+         hour.group = as.numeric(as.character(hour.group))) %>%
+  group_by(datt, hour.group) %>%
+  summarise(meanTT = mean(Value2))  %>%
+  # mutate(value=meanTT*max(dat$TravelTime),
+  #        xmin=  hour.group,
+  #        xmax = hour.group + width,
+  #        ymin = datt*N ,
+  #        ymax = datt*N  + 24)
+  # 
+     mutate(value=meanTT*max(dat$Value),
+             xmin=  hour.group,
+             xmax = hour.group + width,
+             ymin = datt*N,
+             ymax = datt*N + meanTT*N*1.1)
+
+poly <- bars %>%
+  rowwise() %>%
+  do(with(., data_frame(day=datt,
+                        date=day,
+                        hour=hour.group,
+                        value=value,
+                        x = c(xmin, xmax, xmax, xmin),
+                        y = c(ymin ,
+                              ymin ,
+                              ymax + width,
+                              ymax + width ))))
+
+
+ggplot(poly, aes(x, y, group = interaction(hour, day),fill=value)) +
+  geom_polygon(colour="black",size=0.25) +
+  
+  coord_polar() +
+  # ylim(-20, max(poly$y)) +
+  #viridis::scale_fill_viridis(discrete = TRUE, option = 'C')# +
+  scale_x_continuous(limits=c(0,N), breaks=seq(0,N-1,1), minor_breaks=0:N,
+                     labels=paste0(rep(c(12,1:11),1), rep(c("AM","PM"),each=12))) +
+  scale_y_continuous(limits=c(-N/2, max(poly$y)*1.2), 
+                     breaks=seq(N,max(poly$y)*1.2,N),
+                     labels=unique(dat$day))+
+  
+  #scale_fill_gradient2(low="green", mid="yellow", high="red", midpoint=mean(bars$meanTT)) +
+  scale_fill_gradientn(colours=colormap)+
+  #scale_fill_brewer(palette="Blues")+
+  ylab("Date")+
+  xlab(NA)+
+  theme_bw()+
+  theme( panel.background = element_blank(),
+         panel.border =  element_rect(fill=NA,colour = "grey80",size=.25),
+         panel.grid.major.y  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.major.x  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.minor.y  = element_blank(),
+         panel.grid.minor.x  = element_blank(),
+         axis.line = element_line(colour = "grey80",size=.25),
+         # panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+         axis.text.y = element_text(size = 10,colour="grey50"),#,hjust=0,vjust=1),
+         axis.line.y = element_line(size=0.25)
+  )
+
+
+#--------------------------------------图6-3-3 不同形式的螺旋图和雷达图. (b) 螺旋柱形图. -----------------------------------------------
+
+bars <- dat %>% 
+  mutate(hour.group = cut(hour, breaks=seq(0,24,width), labels=seq(0,23.75,width),include.lowest=TRUE), #
+         hour.group = as.numeric(as.character(hour.group))) %>%
+  group_by(datt, hour.group) %>%
+  summarise(meanTT = mean(Value2))  %>%
+  mutate(value=meanTT*max(dat$Value),
+         xmin=  hour.group,
+         xmax = hour.group + width,
+         ymin = datt*N ,
+         ymax = datt*N  + 24)
+
+poly <- bars %>%
+  rowwise() %>%
+  do(with(., data_frame(day=datt,
+                        date=day,
+                        hour=hour.group,
+                        value=value,
+                        x = c(xmin, xmax, xmax, xmin),
+                        y = c(ymin ,
+                              ymin ,
+                              ymax + width,
+                              ymax + width ))))
+
+
+ggplot(poly, aes(x, y, group = interaction(hour, day),fill=value)) +
+  geom_polygon(colour="black",size=0.25) +
+  
+  coord_polar() +
+  # ylim(-20, max(poly$y)) +
+  #viridis::scale_fill_viridis(discrete = TRUE, option = 'C')# +
+  scale_x_continuous(limits=c(0,N), breaks=seq(0,N-1,1), minor_breaks=0:N,
+                     labels=paste0(rep(c(12,1:11),1), rep(c("AM","PM"),each=12))) +
+  scale_y_continuous(limits=c(-N/2, max(poly$y)), 
+                     breaks=seq(N,max(poly$y),N),
+                     labels=unique(dat$day) )+
+  
+  #scale_fill_gradient2(low="green", mid="yellow", high="red", midpoint=mean(bars$meanTT)) +
+  scale_fill_gradientn(colours=colormap)+
+  #scale_fill_brewer(palette="Blues")+
+  ylab("Date")+
+  xlab(NA)+
+  theme_bw()+
+  theme( panel.background = element_blank(),
+         panel.border =  element_rect(fill=NA,colour = "grey80",size=.25),
+         panel.grid.major.y  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.major.x  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.minor.y  = element_blank(),
+         panel.grid.minor.x  = element_blank(),
+         axis.line = element_line(colour = "grey80",size=.25),
+         # panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+         axis.text.y = element_text(size = 10,colour="grey50"),#,hjust=0,vjust=1),
+         axis.line.y = element_line(size=0.25)
+  )
+
+```
+## 图6-3-5 不同形式的螺旋面积图
+```{r}
+
+
+#EasyCharts团队出品，如有商用必究，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(ggplot2)
+library(data.table)
+library(RColorBrewer)
+
+
+set.seed(1)
+dtData <- data.table(
+  date = seq(as.Date("1/01/2014", "%d/%m/%Y"),as.Date("31/12/2017", "%d/%m/%Y"),"days"),
+  ValueCol = runif(1461))
+dtData[, ValueCol := ValueCol + (strftime(date,"%u") %in% c(6,7) * runif(1) * 0.75), .I]
+dtData[, ValueCol := ValueCol + (abs(as.numeric(strftime(date,"%m")) - 6.5)) * runif(1) * 0.75, .I]
+
+
+dtData$Year<- as.integer(strftime(dtData$date, '%Y'))   #年份
+
+dtData$DateNum<-as.numeric(dtData$date)-as.numeric(as.Date(paste(as.character(strftime(dtData$date, "%Y")),"-01-01", sep = "")))
+
+
+Step<-5
+dtData$Asst<-rep(Step,nrow(dtData))
+
+YearRange<-unique(dtData$Year)
+for(i in 1:length(YearRange)){
+  dtData$Asst[dtData$Year==YearRange[i]]<-seq(i*Step, (i+1)*Step, length.out = length(dtData$Asst[dtData$Year==YearRange[i]]))
+}
+circlelabel<-c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+circlemonth<-seq(15,345,length=12)
+circlebj<-rep(c(-circlemonth[1:3],rev(circlemonth[1:3])),2)
+
+#-------------------------------------图6-3-5不同形式的螺旋面积图. (b)颜色映射填充----------------------------------------
+Height<-4.8
+dtData$Valueht<-(dtData$ValueCol-min(dtData$ValueCol))/(max(dtData$ValueCol)-min(dtData$ValueCol))*Height
+       
+ggplot()+
+ geom_linerange(data=dtData,aes(x=DateNum,ymin=Asst-5,ymax=Asst+Valueht-5,color=ValueCol),size =1)+
+  geom_line(data=dtData,aes(x=DateNum,y=Asst+Valueht-5,group=Year),size =0.25,color="black")+
+  geom_line(data=dtData,aes(x=DateNum,y=Asst-5,group=Year),size =0.25,color="grey20")+
+  
+  coord_polar(theta="x",start=0)+
+  scale_x_continuous(breaks=c(1,31,59,90,120,151,181,212,243,273,304,334))+
+  scale_y_continuous(limits=c(-5,28),breaks=c(2.5,7.5,12.5,17.5),labels=c("2014","2015","2016","2017"))+
+  scale_color_gradientn(colours=rev(brewer.pal(11,'Spectral')))+
+  geom_text(data=NULL,aes(x=circlemonth,y=28,label=circlelabel,
+                          angle=circlebj),size=4,color="grey50")+#,hjust=0.5,vjust=.5，family="myfont",
+  ylab("Year")+
+  theme_bw()+
+  theme( panel.background = element_blank(),
+         panel.border =  element_rect(fill=NA,colour = "grey80",size=.25),
+         panel.grid.major.y  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.major.x  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.minor.y  = element_blank(),
+         panel.grid.minor.x  = element_blank(),
+         axis.line = element_line(colour = "grey80",size=.25),
+         # panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+         axis.text.y = element_text(size = 10,colour="grey50"),#,hjust=0,vjust=1),
+         axis.line.y = element_line(size=0.25)
+  )
+
+
+#----------------------------------------图6-3-5不同形式的螺旋面积图.(a)纯色填充-----------------------------------------
+ggplot()+
+  geom_ribbon(data=dtData,aes(x=DateNum,ymin=Asst-5,ymax=Asst+Valueht-5,group=Year,fill=Year),
+              size =0.75,fill="#FF8B49")+
+  geom_line(data=dtData,aes(x=DateNum,y=Asst+Valueht-5,group=Year),size =0.25,color="black")+
+  geom_line(data=dtData,aes(x=DateNum,y=Asst-5,group=Year),size =0.25,color="grey20")+
+  
+  coord_polar(theta="x",start=0)+
+  xlim(1,355)+
+  scale_x_continuous(breaks=c(1,31,59,90,120,151,181,212,243,273,304,334))+
+  scale_y_continuous(limits=c(-5,28),breaks=c(2.5,7.5,12.5,17.5),labels=c("2014","2015","2016","2017"))+
+  geom_text(data=NULL,aes(x=circlemonth,y=28,label=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"),
+                          angle=circlebj),size=4,color="grey50")+
+  ylab("Year")+
+  theme_bw()+
+  theme( panel.background = element_blank(),
+         panel.border =  element_rect(fill=NA,colour = "grey80",size=.25),
+         panel.grid.major.y  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.major.x  = element_line(colour = "grey80",size=.25),#,linetype ="dotted" ),
+         panel.grid.minor.y  = element_blank(),
+         panel.grid.minor.x  = element_blank(),
+         axis.line = element_line(colour = "grey80",size=.25),
+         # panel.grid.minor = element_line(colour = "grey60",size=.25,linetype ="dotted" ),
+         axis.text.y = element_text(size = 10,colour="grey50"),#,hjust=0,vjust=1),
+         axis.line.y = element_line(size=0.25)
+  )
+```
+## 图6-4-2 量化波形图
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(reshape2)
+library(ggTimeSeries)
+
+df<-read.csv("./第6章 时间序列型图表/StreamGraph_Data.csv",header=TRUE)
+df_series<-df[,2:ncol(df)]
+Col_Max<-apply(df_series,2,max)
+Col_Sort<-sort(Col_Max,index.return=TRUE,decreasing = TRUE)
+
+mydata<-melt(df,id="time")
+head(mydata)
+mydata$variable<-factor(mydata$variable,levels=colnames(df_series)[Col_Sort$ix])
+ggplot(mydata, aes(x = time, y = value, group = variable, fill = variable)) +
+  stat_steamgraph(colour="black",size=0.25)+ 
+  xlab('Time') + 
+  ylab('') + 
+  theme_light()
+
+```
+## 图6-4-3 时间序列峰峦图
+```{r}
+#EasyCharts团队出品，如有商用必究，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)  
+library(reshape2)
+
+
+df<-read.csv("./第6章 时间序列型图表/StreamGraph_Data.csv",header=TRUE)
+
+#------------------------------------------------图6-4-3 时间序列峰峦图(a)-----------------------------------
+x<-seq(1:nrow(df))
+label<-letters[1:ncol(df)]#colnames(y2)<-
+colnames(df)<-c(seq(1,ncol(df),1))
+
+# base plot
+dfData2<-as.data.frame(cbind(x,df))
+
+Order<-sort(colSums(dfData2[,2:ncol(dfData2)]),index.return=TRUE,decreasing = TRUE) 
+label2<-label[Order$ix]
+mydata<-melt(dfData2,id="x")
+#levels(mydata$variable)[as.integer( colnames(Order))]
+mydata$variable <- factor(mydata$variable, levels = levels(mydata$variable)[Order$ix])
+
+N<-ncol(df)
+Step<-1500
+mydata$offest<--as.numeric(mydata$variable)*Step# adapt the 0.2 value as you need
+
+mydata$V1_density_offest<-mydata$value+mydata$offest
+
+
+ggplot(mydata, aes(x, V1_density_offest, color=variable)) + 
+  #geom_linerange(aes(x, ymin=offest,ymax=V1_density_offest, color==variable),size =1.5, alpha =1) 
+  geom_ribbon(aes(x, ymin=offest,ymax=V1_density_offest, fill=variable),alpha=1,colour=NA)+
+  geom_line(aes(group=variable),color="black")+
+  scale_y_continuous(breaks=seq(-Step,-Step*N,-Step),labels=label2)+
+  #scale_fill_manual(values =COLS)+
+  xlab("Time")+
+  ylab("Class")+
+  theme_classic()+
+  theme(
+    panel.background=element_rect(fill="white",colour=NA),
+    panel.grid.major.x = element_line(colour = "grey80",size=.25),
+    panel.grid.major.y = element_line(colour = "grey60",size=.25),
+    axis.line = element_blank(),
+    text=element_text(size=15),
+    plot.title=element_text(size=15,hjust=.5),#family="myfont",
+    legend.position="none"
+  )
+
+#----------------------------------------------------图6-4-3 时间序列峰峦图(b)----------------------------------
+library(RColorBrewer)
+colormap <- colorRampPalette(rev(brewer.pal(11,'Spectral')))(32)
+
+label<-letters[1:ncol(df)]#colnames(y2)<-
+colnames(df)<-c(seq(1,ncol(df),1))
+
+# base plot
+dfData2<-as.data.frame(cbind(x,df))
+
+Order<-sort(colSums(dfData2[,2:ncol(dfData2)]),index.return=TRUE,decreasing = TRUE) 
+label2<-label[Order$ix]
+
+dfData2<-dfData2[c(1,Order$ix+1)]
+
+mydata<-melt(dfData2,id="x")
+#colnames(dfData2)<-c("x",c(seq(ncol(y2),1,-1)))
+
+
+N<-ncol(df)
+Step<-1500
+mydata$offest<--as.numeric(mydata$variable)*Step# adapt the 0.2 value as you need
+
+mydata$V1_density_offest<-mydata$value+mydata$offest
+
+
+ggplot(mydata, aes(x, V1_density_offest,group=variable)) + 
+  geom_linerange(aes(x, ymin=offest,ymax=V1_density_offest, color=value),size =1.5, alpha =1) +
+  scale_color_gradientn(colours=colormap)+
+  #geom_ribbon(aes(x, ymin=offest,ymax=V1_density_offest, fill=variable),alpha=1,colour=NA)+
+   geom_line(aes(group=variable),color="black")+
+   scale_y_continuous(breaks=seq(-Step,-Step*N,-Step),labels=label2)+
+  xlab("Time")+
+  ylab("Class")+
+  theme_classic()+
+  theme(
+    panel.background=element_rect(fill="white",colour=NA),
+    panel.grid.major.x = element_line(colour = "grey80",size=.25),
+    panel.grid.major.y = element_line(colour = "grey60",size=.25),
+    axis.line = element_blank(),
+    text=element_text(size=13),
+    plot.title=element_text(size=15,hjust=.5),#family="myfont",
+    legend.position="right"
+  )
+
+
+```
+## 图6-5-1 地平线图
+```{r}
+#EasyCharts团队出品，
+#如有问题修正与深入学习，可联系微信：EasyCharts
+
+library(ggplot2)
+library(RColorBrewer)
+library(ggalt) # ggalt 的下载语句：devtools::install_github("hrbrmstr/ggalt")
+library(reshape2)
+colormap <- colorRampPalette(rev(brewer.pal(11,'RdYlBu')))(15)
+
+df<-as.data.frame(matrix(cumsum(rnorm(250 * 15)), ncol = 15))
+colnames(df) <- paste("series", LETTERS[1:15])
+df$x<-rownames(df)
+
+dfData<-melt(df,id='x')
+ggplot(dfData, aes(x =as.numeric(x), y = value) )+
+  geom_horizon(colour=NA,size=0.25,bandwidth=10)+
+  facet_wrap(~variable, ncol = 1,strip.position = "left")+
+  scale_fill_manual(values=colormap)+
+  xlab('Time') + 
+  ylab('') + 
+  theme_bw()+
+  theme(strip.background = element_blank(),
+        strip.text.y = element_text(hjust=0, angle=180,size=10),
+        axis.text.y=element_blank(),
+        panel.grid = element_blank(),
+        panel.spacing.y=unit(-0.05, "lines"),
+        panel.grid.major.y=element_blank(),
+        panel.grid.minor.y =element_blank(),
+        axis.ticks.y = element_blank())
+
+```
+# 第10章 网络关系型图表
+
+## 图10-0-1_不同类型的网络关系型图表.
+
+```{r}
+
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(ggraph)
+library(igraph)
+
+#(a) 热力图-------------------------------------------------------------------------------------------
+library(viridis)
+library(ggplot2)
+library(reshape2)
+
+df <- read.csv("./第10章 网络关系型图表/AdjacencyDirectedWeighted.csv",header=TRUE,stringsAsFactors = FALSE)
+df_sum<-apply(df[,2:ncol(df)],2,sum)+apply(df[,2:ncol(df)],1,sum)
+order<-sort(df_sum,index.return=TRUE,decreasing =TRUE)
+
+
+df_melt <- melt(df,id.vars = 'Region')
+colnames(df_melt)<-c("from","to","value")
+
+df_melt$to<-gsub("\\.", " ",df_melt$to)
+
+df_melt$to<-factor(df_melt$to,levels=df$Region[order$ix],order=TRUE)
+
+
+ggplot(df_melt, aes(x = from, y = to, fill = value,label=value)) +
+  geom_tile(colour="black",size=1) +
+  #geom_text(size=3,colour="white")+
+  coord_equal()+
+  scale_fill_gradientn(colors=c('white','black'))+
+  xlab('FROM')+
+  ylab('TO')+
+  #scale_fill_viridis(discrete=FALSE)+
+  theme(
+    axis.text.x = element_text(angle=90,hjust=1,colour='black'),
+    axis.text.y = element_text(angle=0,hjust=1,colour='black')
+  )
+
+#(b)桑基图------------------------------------------------------------------------------------------
+library(ggalluvial)
+library(ggplot2)
+data(vaccinations)
+levels(vaccinations$response) <- rev(levels(vaccinations$response))
+ggplot(vaccinations,
+       aes(x = survey, stratum = response, alluvium = subject,
+           y = freq,
+           label = response)) +
+  geom_flow(alpha = 0.7) +
+  geom_stratum(alpha = 1,fill = 'black',color = "white") +
+  theme_classic()+
+  theme(legend.position = "none",
+        axis.text.x =element_text(color="black",size=12),
+        axis.title.x = element_blank(),
+        axis.text.y =element_blank(),
+        axis.line = element_blank(),
+        axis.ticks =element_blank() )
+
+
+#(c)和弦图-------------------------------------------------------------------------------------------
+library(circlize)
+set.seed(999)
+mat<-matrix(sample(18, 18), 3, 6)
+rownames(mat) <- paste0("S", 1:3)
+colnames(mat) <- paste0("E", 1:6)
+df<- data.frame(from = rep(rownames(mat), times = ncol(mat)),
+                to = rep(colnames(mat), each = nrow(mat)),
+                value = as.vector(mat),
+                stringsAsFactors = FALSE)
+chordDiagram(df,grid.col = 'black',
+             link.border="grey", 
+             transparency = 0.35,
+             directional = 1,
+             #direction.type = c("arrows", "diffHeight"),
+             diffHeight = -0.04,
+             annotationTrack = "grid",
+             annotationTrackHeight = c(0.05, 0.1),
+             link.arr.type = "big.arrow",
+             link.sort = TRUE,
+             link.largest.ontop = TRUE)
+
+circos.clear()
+
+
+#(d) 节点链接图---------------------------------------------------------------------------------------
+library(dplyr)
+# read edges and nodes
+nodes = read.csv("./第10章 网络关系型图表/dolphin_nodes.csv")
+edges = read.csv("./第10章 网络关系型图表/dolphin_edges.csv")
+n = nrow(nodes)
+m = nrow(edges)
+
+# mutate edges and nodes
+edge_type = sample(c("love", "friendship"), m, replace = TRUE)
+edge_weight = runif(m, 1, 10)
+edges = mutate(edges, type = edge_type, weight = edge_weight)
+nodes = mutate(nodes, id = 1:n) %>% select(id, everything())
+
+# degree of nodes (number of ties for each dolphin)
+tb = tibble(v = c(1:n, edges$x, edges$y))
+d = count(tb, v)$n - 1
+nodes = mutate(nodes, degree = d)
+
+# create graph from data frames
+mygraph = graph_from_data_frame(edges, nodes,directed = FALSE)
+
+ggraph(mygraph, layout = "fr") + 
+  geom_edge_link(edge_colour = "grey") + 
+  geom_node_point(aes(size = degree), colour = "black") +
+  theme_minimal() +
+  theme(
+    legend.position="none",
+    panel.grid = element_blank(),
+    axis.line = element_blank(),
+    axis.ticks =element_blank(),
+    axis.text =element_blank(),
+    axis.title = element_blank()
+    #plot.margin=unit(c(0,0,0,0), "null"),
+    #panel.spacing=unit(c(0,0,0,0), "null")
+  ) 
+
+
+
+#(h)蜂箱图---------------------------------------------------------------------------------------
+
+
+if (FALSE) {
+  flareGr <- graph_from_data_frame(flare$imports)
+  # Add some metadata to divide nodes by
+  V(flareGr)$type <- 'Both'
+  V(flareGr)$type[degree(flareGr, mode = 'in') == 0] <- 'Source'
+  V(flareGr)$type[degree(flareGr, mode = 'out') == 0] <- 'Sink'
+  analyticsNodes <- grep('flare.analytics', V(flareGr)$name)
+  E(flareGr)$type <- 'Other'
+  E(flareGr)[inc(analyticsNodes)]$type <- 'Analytics'
+  ggraph(flareGr, 'hive', axis = 'type') +
+    geom_edge_hive(colour = 'black', edge_alpha = 0.4) +
+    geom_axis_hive(colour = 'black', size = 1) +
+    #geom_edge_hive(aes(colour = type), edge_alpha = 0.1) +
+    #geom_axis_hive(aes(colour = type)) +
+    coord_fixed() +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      panel.grid = element_blank(),
+      axis.line = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text = element_blank(),
+      axis.title = element_blank()
+      #plot.margin=unit(c(0,0,0,0), "null"),
+      #panel.spacing=unit(c(0,0,0,0), "null")
+    )
+  
+}
+
+#(i)边绑定图---------------------------------------------------------------------------------------
+library(ggraph)
+library(igraph)
+library(tidyverse)
+
+# create a data frame giving the hierarchical structure of your individuals
+d1=data.frame(from="origin", to=paste("group", seq(1,10), sep=""))
+d2=data.frame(from=rep(d1$to, each=10), to=paste("subgroup", seq(1,100), sep="_"))
+hierarchy=rbind(d1, d2)
+
+# create a dataframe with connection between leaves (individuals)
+all_leaves=paste("subgroup", seq(1,100), sep="_")
+connect=rbind( data.frame( from=sample(all_leaves, 100, replace=T) , to=sample(all_leaves, 100, replace=T)), data.frame( from=sample(head(all_leaves), 30, replace=T) , to=sample( tail(all_leaves), 30, replace=T)), data.frame( from=sample(all_leaves[25:30], 30, replace=T) , to=sample( all_leaves[55:60], 30, replace=T)), data.frame( from=sample(all_leaves[75:80], 30, replace=T) , to=sample( all_leaves[55:60], 30, replace=T)) )
+connect$value=runif(nrow(connect))
+
+# create a vertices data.frame. One line per object of our hierarchy
+vertices = data.frame(
+  name = unique(c(as.character(hierarchy$from), as.character(hierarchy$to))) , 
+  value = runif(111)
+) 
+# Let's add a column with the group of each name. It will be useful later to color points
+vertices$group = hierarchy$from[ match( vertices$name, hierarchy$to ) ]
+
+
+# Create a graph object
+mygraph <- graph_from_data_frame( hierarchy, vertices=vertices )
+
+# The connection object must refer to the ids of the leaves:
+from = match( connect$from, vertices$name)
+to = match( connect$to, vertices$name)
+
+# Basic graph
+ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + 
+  geom_conn_bundle(data = get_con(from = from, to = to), 
+                   alpha=0.2, colour="black", width=0.9, tension=1)+ 
+  geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +
+  coord_fixed()+
+  theme_minimal() +
+  theme(
+    legend.position="none",
+    panel.grid = element_blank(),
+    axis.line = element_blank(),
+    axis.ticks =element_blank(),
+    axis.text =element_blank(),
+    axis.title = element_blank()
+    #plot.margin=unit(c(0,0,0,0), "null"),
+    #panel.spacing=unit(c(0,0,0,0), "null")
+  ) 
+
+
+```
+
+# 第11章 地理空间型图表
+
+## 图11-1-6 虚拟地图_文件shp的构造
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+#reference:
+#https://cloud.tencent.com/developer/article/1103887
+
+library(maptools)
+
+df_Map <- read.csv("./第11章 地理空间型图表/Virtual_Map1.csv",stringsAsFactors=FALSE)  
+group<-as.character(unique(df_Map$group))
+#group<-unique(df_Map$group)
+mypolys = lapply(group,
+                 function(x) {
+                   tmp = df_Map[df_Map$group==x,]
+                   tmp$X = as.numeric(tmp$long);
+                   tmp$Y = as.numeric(tmp$lat);
+                   tmp <- na.omit(tmp)
+                   tmp
+                 })
+
+
+names(mypolys) = group
+myPolygons = lapply(group,
+                    function(x) {
+                      tmp = mypolys[[x]];
+                      Polygons(list(Polygon(cbind(tmp$X, tmp$Y))), x)
+                    })
+
+mySpn = SpatialPolygons(myPolygons)
+
+df_group<-df_Map[!duplicated(df_Map$group),]
+
+myshpdata = SpatialPolygonsDataFrame(mySpn,
+                                     data = data.frame(
+                                      country = df_group$country,
+                                      #type = df_group$type,
+                                      row.names = row.names(mySpn)))
+
+writePolyShape(x = myshpdata, fn = "Virtual_Map1")
+```
+## 图11-1-6_虚拟地图的绘制
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+
+#(a) 陆地岛屿
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map0.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_Map <- merge(watershedPoints, dataProjected@data, by = "id")
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=long, y=lat, group=group,fill=type),colour="black",size=0.25)
+
+#(b) 国家
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_Map <- merge(watershedPoints, dataProjected@data, by = "id")
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=long, y=lat, group=group,fill=country),colour="black",size=0.25)
+
+```
+
+
+
+## 图11-1-10 虚拟地图的绘制
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+#reference:
+#https://cloud.tencent.com/developer/article/1103887
+
+library(maptools)
+
+df_Map <- read.csv("./第11章 地理空间型图表/Virtual_Map1.csv",stringsAsFactors=FALSE)  
+group<-as.character(unique(df_Map$group))
+#group<-unique(df_Map$group)
+mypolys = lapply(group,
+                 function(x) {
+                   tmp = df_Map[df_Map$group==x,]
+                   tmp$X = as.numeric(tmp$long);
+                   tmp$Y = as.numeric(tmp$lat);
+                   tmp <- na.omit(tmp) 
+                   
+                 })
+
+
+names(mypolys) = group
+myPolygons = lapply(group,
+                    function(x) {
+                      tmp = mypolys[[x]];
+                      Polygons(list(Polygon(cbind(tmp$X, tmp$Y))), x)
+                    })
+
+mySpn = SpatialPolygons(myPolygons)
+
+df_group<-df_Map[!duplicated(df_Map$group),]
+
+myshpdata = SpatialPolygonsDataFrame(mySpn,
+                                     data = data.frame(
+                                      country = df_group$country,
+                                      #type = df_group$type,
+                                      row.names = row.names(mySpn)))
+
+writePolyShape(x = myshpdata, fn = "Virtual_Map1")
+
+```
+
+## 图11-2-1 分级统计地图
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+
+#---------------------------------方法1：rgdal::readOGR()-------------------------------------
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+watershedDF <- full_join(watershedPoints, dataProjected@data,by='id')
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_Map <- full_join(watershedPoints, dataProjected@data, by = "id")
+
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv")  
+
+df <- left_join(df_Map, df_city[c('country','orange')], by = "country")
+
+#(a) 单色渐变系颜色主题
+ggplot()+
+  geom_polygon(data=df, aes(x=long, y=lat, group=group,fill=orange),colour="black",size=0.25)+
+  geom_text(data=df_city,aes(x=long, y=lat, label=country),colour="black",size=3)+
+  scale_fill_gradientn(colours = rev(brewer.pal(9,'YlGnBu')))+
+  theme(legend.position = c(0.9,0.2),
+        legend.background = element_blank())
+
+
+#(b) 双色渐变系颜色主题
+ggplot()+
+  geom_polygon(data=df, aes(x=long, y=lat, group=group,fill=orange),colour="black",size=0.25)+
+  geom_text(data=df_city,aes(x=long, y=lat, label=country),colour="black",size=3)+
+  scale_fill_gradient2(low="#00A08A",mid="white",high="#FF0000",
+                       midpoint = mean(df_city$orange))+
+  theme(legend.position = c(0.9,0.2),
+        legend.background = element_blank())
+
+
+#---------------------------------------方法2：sf::st_read()----------------------------------------------
+library(sf)  #提供st_read()函数
+library(ggplot2)
+library(dplyr)
+
+nz<-st_read("./第11章 地理空间型图表/Virtual_Map1.shp")
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv")  
+df_map<-left_join(nz,df_city[c('country','orange')],by = "country")
+
+#(b) 双色渐变系颜色主题
+ggplot() + 
+  geom_sf(data = df_map, aes(fill = orange))+
+  coord_sf(datum = st_crs("+proj=longlat +datum=WGS84"))+
+  scale_fill_gradient2(low="#00A08A",mid="white",high="#FF0000",
+                      midpoint = mean(df_city$orange))
+
+
+```
+## 图11-2-2 连续型Cartogram 示意图
+
+```{r eval=FALSE}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+library(cartogram) #提供cartogram()函数
+library(rgeos) #提供gCentroid()函数
+
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv")  
+
+
+dataProjected@data<-left_join(dataProjected@data,df_city[c('country','orange')],by = "country")
+
+my_cartogram <- cartogram_cont(dataProjected, 'orange') #新版函数：cartogram_cont()
+
+
+carto_fortified <- fortify(my_cartogram,region='country')
+
+carto_fortified <- carto_fortified %>% left_join(. , my_cartogram@data, by=c("id"="country")) 
+
+df_centers <- cbind.data.frame(data.frame(gCentroid(my_cartogram, byid=TRUE), 
+                                          id=my_cartogram@data$country))
+
+#以orange 数值作为映射
+ggplot() +
+  geom_polygon(data = carto_fortified, aes(fill = orange, x = long, y = lat, group = group) , size=0.05, alpha=0.9, color="black") +
+  geom_text(data=df_centers, aes(x=x, y=y, label=id), color="black", size=2, alpha=0.6) +
+  scale_fill_gradientn(colours=rev(brewer.pal(7,"RdYlBu")), name="orange") 
+
+```
+
+## 图11-3-1 点描法地图
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_Map <- full_join(watershedPoints, dataProjected@data, by = "id")
+
+
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv")  
+
+#(a) 散点（point）+文本（text）
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=long, y=lat, group=group),fill='white',colour="black",size=0.25)+
+  geom_point(data=df_city,aes(x=long, y=lat),shape=21,fill='red',colour="black",size=4)+
+  geom_text(data=df_city,aes(x=long, y=lat, label=city),vjust=1.5,colour="black",size=3)
+
+#(b) 标签（label）
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=long, y=lat, group=group),fill='white',colour="black",size=0.25)+
+  #geom_point(data=df_city,aes(x=long, y=lat),shape=21,fill='red',colour="black",size=4)+
+  geom_label(data=df_city,aes(x=long, y=lat, label=city),fill='orange',colour="black",size=3)
+
+
+
+
+```
+## 图11-3-2 带气泡的地图
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+
+
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+watershedDF <- full_join(watershedPoints, dataProjected@data,by='id')
+
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv")  
+
+#(a) 数值映射到单个视觉通道（气泡大小）
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=long, y=lat, group=group),fill='white',colour="black",size=0.25)+
+  geom_point(data=df_city,aes(x=long, y=lat,size=orange),shape=21,fill='#EF5439',colour="black")+
+  geom_text(data=df_city,aes(x=long, y=lat, label=city),vjust=2,colour="black",size=3)+
+  scale_size(range=c(2,9),name='price')
+
+#(b) 数值映射到两个视觉通道（气泡大小和颜色）
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=long, y=lat, group=group),fill='white',colour="black",size=0.25)+
+  geom_point(data=df_city,aes(x=long, y=lat,size=orange,fill=orange),shape=21,colour="black")+
+  geom_text(data=df_city,aes(x=long, y=lat, label=city),vjust=2,colour="black",size=3)+
+  scale_size(range=c(2,9),name='price')+
+  scale_fill_gradientn(colours = brewer.pal(9,'YlOrRd'),name='price')
+```
+
+##图11-3-3 多数据系列的气泡图
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+
+library(ggplot2)
+library(ggforce)
+#图11-3-3(a) 水平双气泡(两个数据系列)的绘图数据
+
+
+#(a) 水平双气泡（两个数据系列）
+df<-data.frame(r=c(4,2),
+               start=c(-pi/2, pi/2),
+               end=c(pi/2,3*pi/2),
+               group=c('a','b'))
+ggplot(df)+
+  geom_arc_bar(aes(x0=0,y0=0,r0=0,r=r,
+                   start=start,
+                   end=end,
+                   fill=group))+
+  xlim(-4,4)+
+  ylim(-4,4)+
+  coord_fixed()
+
+
+#(b) 竖直双气泡（两个数据系列）
+df<-data.frame(r=c(4,2),
+               start=c(0,pi),
+               end=c(pi,2*pi),
+               group=c('a','b'))
+ggplot(df)+
+  geom_arc_bar(aes(x0=0,y0=0,r0=0,r=r,
+                   start=start,
+                   end=end,
+                   fill=group))+
+  xlim(-4,4)+
+  ylim(-4,4)+
+  coord_fixed()
+
+#(c) 南丁格尔玫瑰图（4 个数据系列）
+df3<-data.frame(r=c(4,3,1,2), start=c(0,90,180,270)/180*pi, end=(c(0,90,180,270)+90)/180*pi, group=c('a','b','c','d'))
+ggplot(df3)+
+  geom_arc_bar(aes(x0=0,y0=0,r0=0,r=r, start=start, end=end, fill=group))+
+  xlim(-4,4)+
+  ylim(-4,4)+
+  coord_fixed()
+
+```
+## 图11-3-4 带双气泡的地图
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+#Reference: https://stackoverflow.com/questions/47493197/how-to-draw-two-half-circles-in-ggplot-in-r/47493452#47493452
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+library(ggforce)
+library(reshape2)
+
+
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+watershedDF <- full_join(watershedPoints, dataProjected@data,by='id')
+
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv")  
+
+Map_Scale<-0.75
+min_lat<-min(df_Map$lat) #30.11628
+max_lat<-max(df_Map$lat) #59.94186
+min_long<-min(df_Map$long) #105.2945
+max_long<-max(df_Map$long) #134.8317
+
+df_Map$x<-(df_Map$long-min_long)/(max_long-min_long)
+df_Map$y<-(df_Map$lat-min_lat)/(max_lat-min_lat)*Map_Scale
+
+
+df_city<-df_city[c("lat","long","city","orange","apple")]
+df_city<-melt(df_city,id.vars=c("lat","long","city"))
+
+
+#(a) 水平双气泡（两个数据系列）------------------------------------------------------------------
+df_city$start<- rep(c(-pi/2, pi/2), each=nrow(df_city)/2)
+df_city$vjust<- rep(c(1, -1), each=nrow(df_city)/2)
+r <- 0.04
+scale <- r/max(sqrt(df_city$value))
+
+df_city$x<-(df_city$long-min_long)/(max_long-min_long)
+df_city$y<-(df_city$lat-min_lat)/(max_lat-min_lat)*Map_Scale
+
+labels_x<-seq(110,135,10)
+breaks_x<-(labels_x-min_long)/(max_long-min_long)
+
+labels_y<-seq(30,60,10)
+breaks_y<-(labels_y-min_lat)/(max_lat-min_lat)
+
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=x, y=y, group=group),fill='white',colour="black",size=0.25)+ 
+  geom_arc_bar(data=df_city,aes(x0 = x, y0 = y, r0 = 0, r = sqrt(value)*scale,
+                   start = start, end = start + pi, fill = variable),
+                  color = "black",size=0.2) +
+  geom_text(data=df_city,aes(label = city, x = x, y = y),vjust=2.25,size =3)+
+  #geom_text(data=df_city,aes(label = value, x = x, y = y + vjust*scale*sqrt(value)*1.3),
+  #          size =3)#+ 
+  scale_x_continuous(breaks=breaks_x,labels=labels_x)+
+  scale_y_continuous(breaks=breaks_y,labels=labels_y)+
+  xlab("long") + 
+  ylab("lat") +
+  coord_fixed()+
+  theme(legend.position = c(0.9,0.15),
+        legend.background = element_blank())
+
+#(b) 竖直双气泡（两个数据系列）------------------------------------------------------------------
+df_city$start<- rep(c(0, pi), each=nrow(df_city)/2)
+df_city$vjust<- rep(c(1, -1), each=nrow(df_city)/2)
+r <- 0.04
+scale <- r/max(sqrt(df_city$value))
+
+df_city$x<-(df_city$long-min_long)/(max_long-min_long)
+df_city$y<-(df_city$lat-min_lat)/(max_lat-min_lat)*Map_Scale
+
+labels_x<-seq(110,135,10)
+breaks_x<-(labels_x-min_long)/(max_long-min_long)
+
+labels_y<-seq(30,60,10)
+breaks_y<-(labels_y-min_lat)/(max_lat-min_lat)
+
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=x, y=y, group=group),fill='white',colour="black",size=0.25)+ 
+  geom_arc_bar(data=df_city,aes(x0 = x, y0 = y, r0 = 0, r = sqrt(value)*scale,
+                                start = start, end = start + pi, fill = variable),
+               color = "black",size=0.2) +
+  geom_text(data=df_city,aes(label = city, x = x, y = y),vjust=2.25,size =3)+
+  #geom_text(data=df_city,aes(label = value, x = x, y = y + vjust*scale*sqrt(value)*1.3),
+  #          size =3)#+ 
+  scale_x_continuous(breaks=breaks_x,labels=labels_x)+
+  scale_y_continuous(breaks=breaks_y,labels=labels_y)+
+  xlab("long") + 
+  ylab("lat") +
+  coord_fixed()+
+  theme(legend.position = c(0.9,0.15),
+        legend.background = element_blank())
+
+
+
+```
+## 图11-4-1 带饼图的地图.
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+library(reshape2)
+library(scatterpie)
+#library(wesanderson)
+
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+watershedDF <- full_join(watershedPoints, dataProjected@data,by='id')
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_Map <- full_join(watershedPoints, dataProjected@data, by = "id")
+
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv")  
+
+Map_Scale<-0.75
+min_lat<-min(df_Map$lat) #30.11628
+max_lat<-max(df_Map$lat) #59.94186
+min_long<-min(df_Map$long) #105.2945
+max_long<-max(df_Map$long) #134.8317
+
+df_Map$x<-(df_Map$long-min_long)/(max_long-min_long)
+df_Map$y<-(df_Map$lat-min_lat)/(max_lat-min_lat)*Map_Scale
+
+
+df_city$x<-(df_city$long-min_long)/(max_long-min_long)
+df_city$y<-(df_city$lat-min_lat)/(max_lat-min_lat)*Map_Scale
+
+labels_x<-seq(110,135,10)
+breaks_x<-(labels_x-min_long)/(max_long-min_long)
+
+labels_y<-seq(30,60,10)
+breaks_y<-(labels_y-min_lat)/(max_lat-min_lat)
+
+
+df_city$Sumindex<-rowSums(df_city[,c("orange","apple","banana","watermelon")])
+Bubble_Scale<-0.04
+radius<-sqrt(df_city$Sumindex/pi)
+Max_radius<-max(radius)
+df_city$radius<-radius/Max_radius*Bubble_Scale
+
+#(a) 散点复合饼图
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=x, y=y, group=group),fill='white',colour="black",size=0.25)+ 
+  geom_scatterpie(data=df_city,aes(x=x, y=y, group=city,r=0.03),# 0.03
+                  cols=c("orange","apple","banana","watermelon"), color="black", alpha=1,size=0.1)+
+  scale_x_continuous(breaks=breaks_x,labels=labels_x)+
+  scale_y_continuous(breaks=breaks_y,labels=labels_y)+
+  xlab("long") + 
+  ylab("lat") +
+  coord_fixed()
+
+#(b) 气泡复合饼图
+ggplot()+
+  geom_polygon(data=df_Map, aes(x=x, y=y, group=group),fill='white',colour="black",size=0.25)+ 
+  geom_scatterpie(data=df_city,aes(x=x, y=y, group=city,r=radius),# 0.03
+                   cols=c("orange","apple","banana","watermelon"), color="black", alpha=1,size=0.1)+
+  geom_scatterpie_legend(df_city$radius, x=0.9, y=0.1, 
+                          n=5,
+                         labeller=function(x) round((x* Max_radius/Bubble_Scale)^2*pi))+
+  scale_x_continuous(breaks=breaks_x,labels=labels_x)+
+  scale_y_continuous(breaks=breaks_y,labels=labels_y)+
+  xlab("long") + 
+  ylab("lat") +
+  coord_fixed()
+
+
+```
+## 图11-5-1 带柱形的地图
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(rgdal)   #提供readOGR()函数
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+
+dataProjected <- readOGR("./第11章 地理空间型图表/Virtual_Map1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+watershedDF <- full_join(watershedPoints, dataProjected@data,by='id')
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_Map <- full_join(watershedPoints, dataProjected@data, by = "id")
+
+df_city<-read.csv("./第11章 地理空间型图表/Virtual_City.csv") 
+
+selectCol<-c("orange","apple","banana","watermelon")
+MaxH<-max(df_city[,selectCol])
+Scale<-3
+width<-1.1
+df_city[,selectCol]<-df_city[,selectCol]/MaxH*Scale
+
+df_city<-melt(df_city[c('lat','long','group','city',selectCol)],
+              id.vars=c('lat','long','group','city'))
+df_city<-transform(df_city,hjust1=ifelse(variable=='orange',-width, 
+                                         ifelse(variable=='apple',-width/2,
+                                         ifelse(variable=='banana',0,width/2))),
+                          hjust2=ifelse(variable=='orange',-width/2, 
+                                 ifelse(variable=='apple',0,
+                                        ifelse(variable=='banana',width/2,width))))
+  
+Lengend_data<-data.frame(X=rep(132,5),Y=rep(32,5),index=seq(0,MaxH,MaxH/4))
+
+#(a) 带柱形的地图------------------------------------------------------------------------------
+ggplot() +
+  geom_polygon(data=df_Map, aes(x = long, y = lat,group=group),
+               fill="white",colour="black",size=0.25)+
+  geom_rect(data = df_city, aes(xmin = long +hjust1, xmax = long+hjust2,
+                                ymin = lat, ymax = lat + value ,
+                                fill= variable),
+            size =0.25, colour ="black", alpha = 1)+
+  geom_text(data=df_city[!duplicated(df_city$city),],aes(x=long,y=lat-0.5,label=city),size=4)+
+  labs(fill='type')+
+  geom_rect(data = Lengend_data,aes(xmin = X , xmax = X+0.5 ,
+                                   ymin = Y, ymax = Y+index / MaxH * Scale),
+            size =0.25, colour ="black",fill = NA,alpha = 1)+
+  geom_text(data = Lengend_data,aes(x=X+1.5,y=  Y+index / MaxH * Scale,
+                                    label=index),size=3)
+
+
+#(b) 带南丁格尔玫瑰图的地图--------------------------------------------------------------------
+
+Map_Scale<-0.75
+min_lat<-min(df_Map$lat) #30.11628
+max_lat<-max(df_Map$lat) #59.94186
+min_long<-min(df_Map$long) #105.2945
+max_long<-max(df_Map$long) #134.8317
+
+df_Map$x<-(df_Map$long-min_long)/(max_long-min_long)
+df_Map$y<-(df_Map$lat-min_lat)/(max_lat-min_lat)*Map_Scale
+
+
+
+
+df_city$x<-(df_city$long-min_long)/(max_long-min_long)
+df_city$y<-(df_city$lat-min_lat)/(max_lat-min_lat)*Map_Scale
+
+labels_x<-seq(110,135,10)
+breaks_x<-(labels_x-min_long)/(max_long-min_long)
+
+labels_y<-seq(30,60,10)
+breaks_y<-(labels_y-min_lat)/(max_lat-min_lat)
+
+r <- 0.05
+scale <- r/max(sqrt(df_city$value))
+df_city$start<-rep(c(0,90,180,270)/180*pi,each=nrow(df_city)/4)
+df_city$end<-df_city$start+pi/2
+
+ggplot() +
+  geom_polygon(data=df_Map, aes(x = x, y = y,group=group),
+               fill="white",colour="black",size=0.25)+
+  geom_arc_bar(data=df_city,aes(x0=x,y0=y,r0=0,r=sqrt(value)*scale,
+                   start=start,
+                   end=end,
+                   fill=variable),size=0.1)+
+  geom_text(data=df_city[!duplicated(df_city$city),],aes(x=x,y=y,label=city),vjust=2.3,size=3)+
+  labs(x='long',y='lat',fill='type')+
+  scale_x_continuous(breaks=breaks_x,labels=labels_x)+
+  scale_y_continuous(breaks=breaks_y,labels=labels_y)+
+  coord_fixed()
+
+```
+
+# 第11章+ 中国地图图表系列
+
+
+## 图11-1-1-不同投影方法的分级统计世界地图
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+#reference:http://rpsychologist.com/working-with-shapefiles-projections-and-world-maps-in-ggplot
+
+
+library(maps)
+library(ggplot2)
+library(RColorBrewer)
+
+color1<-brewer.pal(9,"YlOrRd")[c(3,4,5,6,7,8,9)]
+color2<-brewer.pal(9,"Greens")[c(4,6)]
+color<-c(rev(color2),color1)
+
+
+mydata<-read.csv("./第11章 地理空间型图表/中国地图图表系列/Country_Data.csv",stringsAsFactors=FALSE) 
+names(mydata)[1]<-c("Country" ,"Scale" ,"million","fan"  )
+mydata$million<-mydata$Scale/1000000
+
+
+mydata$fan<-cut(mydata$million,
+                breaks=c(min(mydata$million,na.rm=TRUE),
+                         0,300,600,900,1200,1500,1800,2100,2400,
+                         max(mydata$million,na.rm=TRUE)),
+                labels=c(" <=0","0~300","300~600","600~900","900~1200","1200~1500",
+                         "1500~1800","1800~2100","2100~2400"," >=2400"),
+                          order=TRUE)
+
+world_map <- map_data("world")
+
+#--------------------------------------mercator--------------------------------------
+# CairoPDF(file="wordmap.pdf",width=12,height=6)
+# showtext.begin()
+ggplot()+
+  geom_map(data=mydata,aes(map_id=Country,fill=fan),map=world_map)+
+  geom_path(data=world_map,aes(x=long,y=lat,group=group),colour="black",size=.2)+ 
+  coord_map("mercator",xlim=c(-180,180), ylim=c(-90, 90))+
+  scale_y_continuous(breaks=(-3:3)*30) +
+  scale_x_continuous(breaks=(-6:6)*30) +
+  scale_fill_manual(name="million dollars",values=color,na.value="grey75")+
+  guides(fill=guide_legend(reverse=TRUE)) +
+  theme_minimal()+
+  theme(
+    #panel.background=element_rect(fill="white",colour=NA),
+    #plot.background = element_rect(fill="white",colour=NA),
+    #panel.grid.major = element_line(colour = "grey60",size=.25),
+    #panel.grid.minor = element_line(colour = "grey60",size=.25),
+    text=element_text(size=15)#
+    #axis.text=element_blank(),
+    #axis.title=element_blank(),
+    #axis.ticks=element_blank()
+    #plot.title=element_text(size=15,family="myfont",hjust=.5)
+    # plot.caption=element_text(size=15,family="myfont",hjust=0),
+    #plot.margin = unit(c(ifelse(i<=4,2,0),0,ifelse(i>=4,2,0),0),"lines")
+    #legend.position="none"
+  )
+# showtext.end()
+# dev.off()
+#-----------------------------------albers-----------------------------------------------
+
+ggplot()+
+  geom_map(data=mydata,aes(map_id=Country,fill=fan),map=world_map)+
+  geom_path(data=world_map,aes(x=long,y=lat,group=group),colour="black",size=.2)+ 
+  coord_map("albers", parameters = c(0, 0))+
+  scale_y_continuous(breaks=(-3:3)*30) +
+  scale_fill_manual(name="million($)",values=color,na.value="grey80")+
+  guides(fill=guide_legend(reverse=TRUE))+
+  theme_minimal()+
+  theme(axis.text.x=element_blank())
+
+
+#------------------------------------Azimuthal ----------------------------------------
+ggplot()+
+  geom_map(data=mydata,aes(map_id=Country,fill=fan),map=world_map)+
+  geom_path(data=world_map,aes(x=long,y=lat,group=group),colour="black",size=.2)+ 
+  coord_map("azequalarea", orientation = c(0, 30, 0))+
+  scale_y_continuous(breaks=(-3:3)*30) +
+  scale_x_continuous(breaks=(-6:6)*30) +
+  scale_fill_manual(name="million($)",values=color,na.value="grey80")+
+  guides(fill=guide_legend(reverse=TRUE))+
+  theme_minimal()+
+  theme(axis.text=element_blank())
+  
+```
+## 图11-1-6-英国分级统计地图
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(ggplot2)       #绘图函数
+library(plyr)          #数据合并工具
+library(maptools)      #地图素材导入 readShapePoly()函数
+library(RColorBrewer)  #地图配色模板参考
+library(scales)        #分割数据
+library(sp)  
+
+England_map1 <-readShapePoly("./第11章 地理空间型图表/中国地图图表系列/GBR_adm_shp/GBR_adm0.shp")  
+AD1_1 <- England_map1@data
+AD2_1 <- data.frame(id=rownames(AD1_1),AD1_1)
+England_map1 <- fortify(England_map1)
+England_map_data1 <- join(England_map1,AD2_1, type = "full")
+
+England_map2 <-readShapePoly("./第11章 地理空间型图表/中国地图图表系列/GBR_adm_shp/GBR_adm2.shp")  
+AD1_2 <- England_map2@data
+AD2_2 <- data.frame(id=rownames(AD1_2),AD1_2)
+England_map2 <- fortify(England_map2)
+England_map_data2 <- join(England_map2,AD2_2, type = "full")
+
+mydata<-data.frame(NAME_2=unique(England_map_data2$NAME_2),
+                   value=round(runif(length(unique(England_map_data2$NAME_2)),0,10)))
+England_map_data2<-join(England_map_data2,mydata,type="full")
+
+ggplot() +
+  geom_polygon(data=England_map_data2, aes(x = long, y = lat,group=group,fill=value),colour="grey60",size=0.1) +
+  geom_path(data=England_map_data1, aes(x = long, y = lat,group=group),colour="black",size=0.25) +
+  scale_fill_gradientn(colours=brewer.pal(9,"YlGnBu"))+
+  theme( 
+    legend.background =element_blank(),
+    legend.position=c(0.13,0.20))
+
+```
+## 图11-1-7. 完整的美国地图
+
+```{r}
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+
+library(ggplot2)       #绘图函数
+library(dplyr)          #数据合并工具
+library(Cairo)         #图片高清导出
+library(RColorBrewer)  #地图配色模板
+library(scales)        #分割数据
+library(showtext)
+library(sp)  
+library(mapproj) 
+library(rgdal)   #提供readOGR()函数
+
+#--------------------------USA_adm2.shp------------------------------------------------------
+
+dataProjected <- readOGR("./第11章 地理空间型图表/中国地图图表系列/USA_adm_shp/USA_adm2.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_map2 <- full_join(watershedPoints, dataProjected@data, by = "id")
+
+df_map2<-df_map2[,c("lat","long","group","NAME_1","NAME_2")]
+
+
+df_mainland<-subset(df_map2,NAME_1!='Alaska'& NAME_1!='Hawaii')
+df_Hawaii<-subset(df_map2,NAME_1=="Hawaii")    
+df_Alaska<-subset(df_map2,NAME_1=="Alaska")
+
+df_Hawaii$long<-df_Hawaii$long+55
+df_Hawaii$lat<-df_Hawaii$lat+3
+
+df_Alaska$long<-(df_Alaska$long-min(df_Alaska$long))/(max(df_Alaska$long)-min(df_Alaska$long))*100-120
+df_Alaska$lat<-(df_Alaska$lat-min(df_Alaska$lat))/(max(df_Alaska$lat)-min(df_Alaska$lat))*10+20
+
+df_map2<-rbind(df_mainland,df_Hawaii,df_Alaska)
+
+#---------------------------构造数据集-------------------------------------------------
+mydata<-data.frame(NAME_2=unique(df_map2$NAME_2),
+                   value=round(runif(length(unique(df_map2$NAME_2)),0,10)))
+
+df_map2<-join(df_map2,mydata,type="full")
+
+
+#--------------------------USA_adm1.shp------------------------------------------------------
+dataProjected <- readOGR("./第11章 地理空间型图表/中国地图图表系列/USA_adm_shp/USA_adm1.shp")
+dataProjected@data$id <- rownames(dataProjected@data)
+watershedPoints <- fortify(dataProjected)
+df_map1<- full_join(watershedPoints, dataProjected@data, by = "id")
+df_map1<-df_map1[,c("lat","long","group","NAME_1")]
+
+df_mainland<-subset(df_map1,NAME_1!='Alaska'& NAME_1!='Hawaii')
+df_Hawaii<-subset(df_map1,NAME_1=="Hawaii")    
+df_Alaska<-subset(df_map1,NAME_1=="Alaska")
+
+df_Hawaii$long<-df_Hawaii$long+55
+df_Hawaii$lat<-df_Hawaii$lat+3
+
+df_Alaska$long<-(df_Alaska$long-min(df_Alaska$long))/(max(df_Alaska$long)-min(df_Alaska$long))*100-120
+df_Alaska$lat<-(df_Alaska$lat-min(df_Alaska$lat))/(max(df_Alaska$lat)-min(df_Alaska$lat))*10+20
+
+
+df_map1<-rbind(df_mainland,df_Hawaii,df_Alaska)
+
+df_map2<-df_map2[df_map2$long<=-50,]
+df_map1<-df_map1[df_map1$long<=-50,]
+
+
+
+ggplot() +
+    geom_polygon(data=df_map2, aes(x = long, y = lat,group=group,fill = value),colour="gray",size=0.25) +
+    geom_polygon(data=df_map1, aes(x = long, y = lat,group=group),fill =NA,colour="black",size=0.25) +
+    scale_fill_distiller(palette="Spectral")+
+    coord_map("albers",parameters=c(30,40))+
+    theme_void()+
+    theme( 
+    legend.background =element_blank(),
+    legend.position=c(0.92,0.4))
+
+```
+
+
+## 图11-1-10(b)-标准中国地图的八段线演变过程
+
+```{r}
+
+
+#EasyCharts团队出品，
+#如需使用与深入学习，请联系微信：EasyCharts
+
+library(maptools)
+library(ggplot2)
+library(plyr)
+library(grid)
+library(RColorBrewer)
+
+
+
+china_map <- readShapeLines("./第11章 地理空间型图表/中国地图图表系列/China_adm_shp/bou2_4m/bou2_4l.shp")      
+x <- china_map@data         
+xs <- data.frame(id=row.names(x),x)
+china_map0<- fortify(china_map)
+df_map1 <- join(china_map0, xs, type = "full")
+
+
+china_map <- readShapePoly("./第11章 地理空间型图表/中国地图图表系列/China_adm_shp/bou2_4m/bou2_4p.shp")     
+x <- china_map@data         
+xs <- data.frame(id=row.names(x),x)
+china_map0<- fortify(china_map)
+df_map2 <- join(china_map0, xs, type = "full")
+
+ggplot()+
+  geom_polygon(data=df_map2, aes(x=long, y=lat, group=group),fill="#FAFAFA",  colour="black",size=0.25)+
+  
+  geom_path(data=df_map1, aes(x=long, y=lat, group=group),  colour="black",size=0.25)+
+ 
+   theme_void()#中国地图
+  
+
+```
+
+
+
+## TAIL
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
